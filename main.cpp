@@ -8,25 +8,32 @@
 const int SCREENH = 384;
 const int SCREENW = 192;
 
-//void updateKey();
+void updateKey(SDL_KeyboardEvent *key);
 //void updateLogic();
 void updateWindow();
 void close();
 void loadMedia();
 int main(int argc, char* argv[]);
 
-SDL_Window *window;                    // Declare a pointer
+SDL_Window *window;
 SDL_Surface* screenSurface = NULL;
 SDL_Surface* blitSurface = NULL;
 
-/*
-void updateKey(){
-    if (GetAsyncKeyState(VK_ESCAPE)){
-        OutputDebugString("VK_ESCAPE");
-        PostQuitMessage(0);
+void updateKey(SDL_KeyboardEvent *key){
+    switch( key->keysym.sym ){
+        case SDLK_UP:
+            printf( "UpKey pressed\n" );
+            break;
+
+        case SDLK_DOWN:
+            printf( "DownKey pressed\n" );
+            break;
+
+        default:
+            break;
     }
 }
-*/
+
 
 void updateWindow(){
     //Apply the image
@@ -72,8 +79,8 @@ int main(int argc, char* argv[]) {
             "An SDL2 window",                  // window title
             SDL_WINDOWPOS_UNDEFINED,           // initial x position
             SDL_WINDOWPOS_UNDEFINED,           // initial y position
-            640,                               // width, in pixels
-            480,                               // height, in pixels
+            SCREENW,                               // width, in pixels
+            SCREENH,                               // height, in pixels
             SDL_WINDOW_OPENGL                 // flags - see below
     );
 
@@ -86,15 +93,6 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    /*int counter = 0;
-    while (gameOn){
-
-
-        counter++;
-        if(counter > 2000){
-            gameOn = false;
-        }
-    }*/
     loadMedia();
 
     //Main loop flag
@@ -110,19 +108,18 @@ int main(int argc, char* argv[]) {
             //User requests quit
             if(e.type == SDL_QUIT) {
                 quit = true;
+
+            }else if(e.type == SDL_KEYDOWN){
+                updateKey(&e.key);
             }
         }
 
-        //updateKey();
         //updateLogic();
 
         updateWindow();
     }
 
-    // The window is open: could enter program loop here (see SDL_PollEvent())
-    //SDL_Delay(3000);  // Pause execution for 3000 milliseconds, for example
-
-
+    //Free and close
     close();
     return 0;
 }
