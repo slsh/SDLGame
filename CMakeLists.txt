@@ -8,5 +8,5 @@ else()
 endif()
 
 set(SOURCE_FILES main.cpp)
-add_executable(SDL_TEST ${SOURCE_FILES})
+add_executable(SDLGame ${SOURCE_FILES})
 

@@ -2,15 +2,96 @@
 // Created by johan eriksson on 26/01/2017.
 //
 
-#include <stdio.h>
-#include <stdlib.h>
-#define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
+#include <stdio.h>
 
+const int SCREENH = 384;
+const int SCREENW = 192;
 
-int main( int argc, char* args[] )
+//void updateKey();
+//void updateLogic();
+void updateWindow();
+void close();
+int main(int argc, char* argv[]);
+
+SDL_Window *window;                    // Declare a pointer
+SDL_Surface* screenSurface = NULL;
+SDL_Surface* blitSurface = NULL;
+
+/*
+void updateKey(){
+    if (GetAsyncKeyState(VK_ESCAPE)){
+        OutputDebugString("VK_ESCAPE");
+        PostQuitMessage(0);
+    }
+}
+*/
+
+void updateWindow(){
+    //Apply the image
+    SDL_BlitSurface( blitSurface, NULL, screenSurface, NULL );
+
+    SDL_UpdateWindowSurface( window );
+}
+
+void close()
 {
-    //Init
+    //Deallocate surface
+    SDL_FreeSurface( screenSurface );
+    screenSurface = NULL;
 
+    SDL_FreeSurface( blitSurface );
+    blitSurface = NULL;
+
+    //Destroy window
+    SDL_DestroyWindow( window );
+    window = NULL;
+
+    SDL_Quit();
+}
+
+int main(int argc, char* argv[]) {
+
+
+    bool gameOn = true;
+
+    SDL_Init(SDL_INIT_VIDEO);              // Initialize SDL2
+
+    // Create an application window with the following settings:
+    window = SDL_CreateWindow(
+            "An SDL2 window",                  // window title
+            SDL_WINDOWPOS_UNDEFINED,           // initial x position
+            SDL_WINDOWPOS_UNDEFINED,           // initial y position
+            640,                               // width, in pixels
+            480,                               // height, in pixels
+            SDL_WINDOW_OPENGL                 // flags - see below
+    );
+
+    SDL_GetWindowSurface( window );
+
+    // Check that the window was successfully created
+    if (window == NULL) {
+        // In the case that the window could not be made...
+        printf("Could not create window: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    int counter = 0;
+    while (gameOn){
+        //updateKey();
+        //updateLogic();
+        updateWindow();
+
+        counter++;
+        if(counter > 2000){
+            gameOn = false;
+        }
+    }
+
+    // The window is open: could enter program loop here (see SDL_PollEvent())
+    //SDL_Delay(3000);  // Pause execution for 3000 milliseconds, for example
+
+
+    close();
     return 0;
 }
