@@ -12,6 +12,7 @@ const int SCREENW = 192;
 //void updateLogic();
 void updateWindow();
 void close();
+void loadMedia();
 int main(int argc, char* argv[]);
 
 SDL_Window *window;                    // Declare a pointer
@@ -50,6 +51,15 @@ void close()
     SDL_Quit();
 }
 
+void loadMedia() {
+    //Load splash image
+    blitSurface = SDL_LoadBMP( "hello_world.bmp" );
+    if( blitSurface == NULL )
+    {
+        printf( "Unable to load image %s! SDL Error: %s\n", "02_getting_an_image_on_the_screen/hello_world.bmp", SDL_GetError() );
+    }
+}
+
 int main(int argc, char* argv[]) {
 
 
@@ -67,7 +77,7 @@ int main(int argc, char* argv[]) {
             SDL_WINDOW_OPENGL                 // flags - see below
     );
 
-    SDL_GetWindowSurface( window );
+    screenSurface = SDL_GetWindowSurface( window );
 
     // Check that the window was successfully created
     if (window == NULL) {
@@ -76,16 +86,37 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    int counter = 0;
+    /*int counter = 0;
     while (gameOn){
-        //updateKey();
-        //updateLogic();
-        updateWindow();
+
 
         counter++;
         if(counter > 2000){
             gameOn = false;
         }
+    }*/
+    loadMedia();
+
+    //Main loop flag
+    bool quit = false;
+
+    //Event handler
+    SDL_Event e;
+
+    //While application is running
+    while(!quit) {
+        //Handle events on queue
+        while(SDL_PollEvent(&e) != 0) {
+            //User requests quit
+            if(e.type == SDL_QUIT) {
+                quit = true;
+            }
+        }
+
+        //updateKey();
+        //updateLogic();
+
+        updateWindow();
     }
 
     // The window is open: could enter program loop here (see SDL_PollEvent())
