@@ -5,6 +5,9 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 
+#include "headers/pieces.h"
+#include "headers/timer.h"
+
 const int SCREENH = 384;
 const int SCREENW = 192;
 
