@@ -3,19 +3,21 @@
 //
 
 #include <SDL2/SDL.h>
-#include <stdio.h>
+#include <iostream>
+#include <string>
 
 #include "headers/pieces.h"
 #include "headers/timer.h"
+#include "headers/Debugger.h"
 
 const int SCREENH = 384;
 const int SCREENW = 192;
 const int LEVELROW = 24;
 const int LEVELCOL = 12;
+bool DEBUG = false;
 
 int currentLevel[LEVELROW][LEVELCOL];
 int level[LEVELROW][LEVELCOL];
-
 
 
 void updateKey(SDL_KeyboardEvent *key);
@@ -30,6 +32,8 @@ int main(int argc, char* argv[]);
 SDL_Window *window;
 SDL_Surface* screenSurface = NULL;
 SDL_Surface* blitSurface = NULL;
+
+
 
 void updateKey(SDL_KeyboardEvent *key){
     switch( key->keysym.sym ){
@@ -72,17 +76,21 @@ void close()
 
 void loadMedia() {
     //Load splash image
-    blitSurface = SDL_LoadBMP( "hello_world.bmp" );
+    blitSurface = SDL_LoadBMP( "../images/bblue.bmp" );
     if( blitSurface == NULL )
     {
-        printf( "Unable to load image %s! SDL Error: %s\n", "02_getting_an_image_on_the_screen/hello_world.bmp", SDL_GetError() );
+        printf( "Unable to load image %s! SDL Error: %s\n", "../images/bblue.bmp", SDL_GetError() );
     }
 }
 
 int main(int argc, char* argv[]) {
+    if (argc > 1) {
+        DEBUG = true;
+    }
 
+    Debugger* dgb = new Debugger(true);
+    dgb->outputDebugString("Heeej");
 
-    bool gameOn = true;
     Timer tmr;
 
     SDL_Init(SDL_INIT_VIDEO);              // Initialize SDL2
