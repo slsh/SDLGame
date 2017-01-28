@@ -2,10 +2,17 @@
 // Created by johan eriksson on 26/01/2017.
 //
 
-#include "headers\pieces.h"
-#include <windows.h>
-#include "headers\pieceDatabase.h"
+
+
+#include "headers/pieces.h"
+//#include <windows.h>
 #include <ctime>
+#include "headers/pieceDatabase.h"
+#include <vector>
+#include <iostream>
+#include <stdlib.h>
+#include <time.h>
+#include <cstdlib>
 
 /*
 	Variablar
@@ -24,23 +31,33 @@ int rightEdge;
 */
 
 Pieces* createPiece(){
+
     Pieces* piece = new Pieces;
     piece->pieceName = randomisePiece();
     piece->posX = 0;
     piece->posY = 4;
     piece->rotation = randomiseRotation();
-    //Compilern gnäller på std::copy - byt till forloop
-    // Byt ut lång string mot den kortare vid senare tillfälle
-    //std::copy(updatePiece(piece, rotation), updatePiece(piece, rotation) + 4 * 4, &piece->thisPiece[0][0]);
-    std::copy(&g_piece_database[piece->pieceName][piece->rotation][0][0], &g_piece_database[piece->pieceName][piece->rotation][0][0] + 4 * 4, &piece->thisPiece[0][0]);
-    std::copy(&g_piece_database[piece->pieceName][piece->rotation][0][0], &g_piece_database[piece->pieceName][piece->rotation][0][0] + 4 * 4, &piece->nextPiece[0][0]);
-    //	std::copy(&myint[0][0], &myint[0][0] + rows*columns, &favint[0][0]);
 
+    //Expand the vectors
+    for (int k = 0; k < 4; ++k) {
+        piece->thisPiece.push_back(std::vector<int>());
+        piece->nextPiece.push_back(std::vector<int>());
+    }
+
+    //Copy data to the vectors
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 4; ++j) {
+            piece->thisPiece[i].push_back( g_piece_database[piece->pieceName][piece->rotation][i][j] );
+            piece->nextPiece[i].push_back( g_piece_database[piece->pieceName][piece->rotation][i][j] );
+        }
+
+    }
     return piece;
 }
 
 void destroyPiece(Pieces* p){
-    delete[] p;
+    delete p;
+
 }
 
 //Rotate the piece
@@ -50,8 +67,8 @@ void rotatePiece(Pieces* p){
     } else{
         p->rotation++;
     }
-    std::copy(&p->nextPiece[0][0], &p->nextPiece[0][0] + 4 * 4, &p->thisPiece[0][0]);
-    std::copy(&g_piece_database[p->pieceName][p->rotation][0][0], &g_piece_database[p->pieceName][p->rotation][0][0] + 4 * 4, &p->nextPiece[0][0]);
+    //std::copy(&p->nextPiece[0][0], &p->nextPiece[0][0] + 4 * 4, &p->thisPiece[0][0]);
+    //std::copy(&g_piece_database[p->pieceName][p->rotation][0][0], &g_piece_database[p->pieceName][p->rotation][0][0] + 4 * 4, &p->nextPiece[0][0]);
 }
 
 //Update rotation
@@ -62,18 +79,20 @@ int updatePiece(Pieces* p, int rotation){
     return NULL;
 }
 
-//Console print
+//Print piece to console
 void printPiece(Pieces* p){
     for (int i = 0; i < 4; ++i){
-        OutputDebugString("\n");
+        std::cout << std::endl;
         for (int j = 0; j < 4; ++j){
-            if (p->thisPiece[i][j] == 1){
-                OutputDebugString("1,");
-            } else{
-                OutputDebugString("0,");
+            if (p->thisPiece[i][j] > 0){
+                std::cout << ("1");
+            } else {
+                std::cout << ("0");
             }
         }
+
     }
+    std::cout << std::endl;
 }
 
 bool rotationVerifier(int rotation){
@@ -85,7 +104,6 @@ bool rotationVerifier(int rotation){
 
 
 PieceID randomisePiece(){
-    srand(time(0));
     PieceID randomPieceValue = static_cast<PieceID>(rand() % G_PIECE_COUNT);
     return randomPieceValue;
 }
@@ -98,10 +116,14 @@ void testPiece() {
     Pieces* p = createPiece();
     Pieces* p2 = createPiece();
 
+    std::cout << "\nPrint piece 1" << std::endl;
     printPiece(p);
+
+    std::cout << "\nPrint piece 2" << std::endl;
     printPiece(p2);
 
     destroyPiece(p);
     destroyPiece(p2);
+
 }
 

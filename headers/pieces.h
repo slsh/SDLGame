@@ -6,6 +6,7 @@
 #define SDLGAME_PIECES_H
 
 #endif //SDLGAME_PIECES_H
+#import <vector>
 
 // Constant for pieces
 enum PieceID{
@@ -28,21 +29,22 @@ enum Direction{
     ROTATE
 };
 
-
 //Struct for pieces
 struct Pieces{
     PieceID pieceName;
     Direction direction;
+
     int posX;
     int posY;
     int rotation;
-
-    int thisPiece[4][4];
-    int nextPiece[4][4];
-
     int leftEdge;
     int rightEdge;
+
+    std::vector< std::vector<int> > thisPiece;
+    std::vector< std::vector<int> > nextPiece;
+
 };
+
 
 //Prototypes
 Pieces* createPiece();
