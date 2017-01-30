@@ -29,8 +29,16 @@ enum Direction{
     ROTATE
 };
 
-//Struct for pieces
-struct Pieces{
+class Pieces {
+private:
+    int updatePiece(Pieces* p, int rotation);
+    bool rotationVerifier(int rotation);
+    PieceID randomisePiece();
+    int randomiseRotation();
+    //std::vector< std::vector<int> > thisPiece;//(4, std::vector<int>(4));
+    //std::vector< std::vector<int> > nextPiece;//(4, std::vector<int>(4));
+
+public:
     PieceID pieceName;
     Direction direction;
 
@@ -43,18 +51,22 @@ struct Pieces{
     std::vector< std::vector<int> > thisPiece;
     std::vector< std::vector<int> > nextPiece;
 
+    //Prototypes
+    Pieces();
+    ~Pieces();
+    void destroyPiece(Pieces* p);
+    static void rotatePiece(Pieces* p);
+
+    static void testPiece();
+    static void printPiece(Pieces* p);
 };
 
 
-//Prototypes
-Pieces* createPiece();
-void destroyPiece(Pieces* p);
 
-int updatePiece(Pieces* p, int rotation);
-void rotatePiece(Pieces* p);
-bool rotationVerifier(int rotation);
-PieceID randomisePiece();
-int randomiseRotation();
 
-void testPiece();
-void printPiece(Pieces* p);
+
+
+
+
+
+
