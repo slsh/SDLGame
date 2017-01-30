@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <string>
+#include <time.h>
 
 #include "headers/pieces.h"
 #include "headers/timer.h"
@@ -14,52 +15,44 @@ const int SCREENH = 384;
 const int SCREENW = 192;
 const int LEVELROW = 24;
 const int LEVELCOL = 12;
+
+//Global
+std::vector< std::vector<int> > currentLevel;
+std::vector< std::vector<int> > level;
 bool DEBUG = false;
-
-int currentLevel[LEVELROW][LEVELCOL];
-int level[LEVELROW][LEVELCOL];
-
-
-void updateKey(SDL_KeyboardEvent *key);
-void updateLogic();
-//void updateWindow();
-void close();
-void loadMedia();
-int main(int argc, char* argv[]);
-
 SDL_Window *window;
 SDL_Surface* screenSurface = NULL;
 SDL_Surface* blitSurface = NULL;
+Debugger* dgb;
 
-Debugger* dgb = new Debugger(true);
+Pieces* currentPiece;
+Pieces* nextPiece;
 
-/*
- * Functions to integrate from here
- */
+bool gameOver;
+int score, lines = 0;
+double timerPoint;
 
+//Proto
+void updateKey(SDL_KeyboardEvent *key);
+void updateLogic();
+void close();
 void lostGame();
-void newPiece();
+Pieces newPiece();
 void combineArrays();
 void tryRotatePiece();
 void updateScore(int scoreMultiplier);
 void deleteRows(int filled[4]);
 void checkRows();
 void movePiece();
-bool isMovementAllowed(int piece[4][4]);
+bool isMovementAllowed(std::vector< std::vector<int> >piece); //int piece[4][4]);
 void initGame();
 void updateInput();
 void DrawBitmap(char *filename, int x, int y);
-//void drawBackText(std::string text, int y, int x);
-//void updateText();
-void updateWindow(int inputLevel[LEVELROW][LEVELCOL]);
-void updateBackground(int inputLevel[LEVELROW][LEVELCOL]);
-void updatePieces(int posX, int posY, int board[4][4]);
-void gameDown();
-
-Pieces* p;
-bool gameOver;
-int score, lines = 0;
-double timerPoint;
+void updateWindow(std::vector< std::vector<int> > inputLevel); //int inputLevel[LEVELROW][LEVELCOL]);
+void updateBackground(std::vector< std::vector<int> > inputLevel); //int inputLevel[LEVELROW][LEVELCOL]);
+void updatePieces(int posX, int posY, std::vector< std::vector<int> > board); //int board[4][4]);
+void levelCreator();
+int main(int argc, char* argv[]);
 
 
 void updateKey(SDL_KeyboardEvent *key){
@@ -108,8 +101,8 @@ void updateKey(SDL_KeyboardEvent *key){
     }
 }
 
-
-void updateWindow(int inputLevel[LEVELROW][LEVELCOL]){
+void updateWindow(std::vector< std::vector<int> > inputLevel){
+//void updateWindow(int inputLevel[LEVELROW][LEVELCOL]){
     updateBackground(inputLevel);
     updatePieces(p->posX, p->posY, p->thisPiece);
 
@@ -148,97 +141,23 @@ void close()
     SDL_Quit();
 }
 
-void loadMedia() {
-
-
-    if( blitSurface == NULL )
-    {
-        printf( "Unable to load image %s! SDL Error: %s\n", "../images/bblue.bmp", SDL_GetError() );
-    }
-
-}
-
-int main(int argc, char* argv[]) {
-    if (argc > 1) {
-        DEBUG = true;
-    }
-
-
-    dgb->outputDebugString("Heeej");
-
-    Timer tmr;
-
-    SDL_Init(SDL_INIT_VIDEO);              // Initialize SDL2
-
-    // Create an application window with the following settings:
-    window = SDL_CreateWindow(
-            "An SDL2 window",                  // window title
-            SDL_WINDOWPOS_UNDEFINED,           // initial x position
-            SDL_WINDOWPOS_UNDEFINED,           // initial y position
-            SCREENW,                               // width, in pixels
-            SCREENH,                               // height, in pixels
-            SDL_WINDOW_OPENGL                 // flags - see below
-    );
-
-    screenSurface = SDL_GetWindowSurface( window );
-
-    // Check that the window was successfully created
-    if (window == NULL) {
-        // In the case that the window could not be made...
-        printf("Could not create window: %s\n", SDL_GetError());
-        return 1;
-    }
-
-    //loadMedia();
-
-    //Main loop flag
-    bool quit = false;
-
-    //Event handler
-    SDL_Event e;
-
-    //While application is running
-    while(!quit) {
-        //Handle events on queue
-        while(SDL_PollEvent(&e) != 0) {
-            //User requests quit
-            if(e.type == SDL_QUIT) {
-                quit = true;
-            }else if(e.type == SDL_KEYDOWN){
-                updateKey(&e.key);
-            }
-        }
-        updateLogic();
-        updateWindow(currentLevel);
-
-        //Time for automatic "falling"
-        if (tmr.elapsed() > timerPoint){
-            p->direction = DOWN;
-            movePiece();
-            tmr.reset();
-        }
-    }
-
-    //Free and close
-    close();
-    return 0;
-}
 
 void lostGame(){
     gameOver = true;
 }
 
-void newPiece(){
+Pieces newPiece(){
     if (!gameOver){
         if (p != NULL){
-            destroyPiece(p);
+            delete p;
         }
-        p = createPiece();
+        p = new Pieces();
         p->direction = DOWN;
         if (!isMovementAllowed(p->thisPiece)){
             lostGame();
         }
     }
+
 }
 
 //Merge arrays
@@ -256,7 +175,7 @@ void combineArrays(){
 //Check if rotation is possible
 void tryRotatePiece(){
     if (isMovementAllowed(p->nextPiece)){
-        rotatePiece(p);
+        Pieces::rotatePiece(p);
     }
 }
 
@@ -264,13 +183,18 @@ void updateScore(int scoreMultiplier){
     score += (100 * scoreMultiplier);
 }
 
-
 //Delete rows
 void deleteRows(int filled[4]){
     //Locate the rows to be deleted, move them to array toDelete
     int scoreMultiplier = 1;
-    int toDelete[LEVELROW][LEVELCOL];
-    std::copy(&currentLevel[0][0], &currentLevel[0][0] + LEVELCOL * LEVELROW, &toDelete[0][0]);
+    std::vector< std::vector<int> > toDelete; //int toDelete[LEVELROW][LEVELCOL];
+    //std::copy(&currentLevel[0][0], &currentLevel[0][0] + LEVELCOL * LEVELROW, &toDelete[0][0]);
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 4; ++j) {
+            toDelete[i][j] = currentLevel[i][j];
+        }
+    }
+
     for (int i = 0; i < 4; i++){
         if (filled[i] > 0){
             for (int j = 0; j < LEVELCOL; j++){
@@ -372,7 +296,8 @@ void movePiece(){
 }
 
 //Check if movement is possible depending on piece direction
-bool isMovementAllowed(int piece[4][4]){
+//bool isMovementAllowed(int piece[4][4]){
+bool isMovementAllowed(std::vector< std::vector<int> > piece){
     for (int i = 0; i < 4; ++i){
         for (int j = 0; j < 4; ++j){
             if (piece[i][j] > 0){
@@ -427,23 +352,35 @@ bool isMovementAllowed(int piece[4][4]){
     return true;
 }
 
+void levelCreator(){
+    for (int i = 0; i < LEVELCOL; ++i) {
+        currentLevel.push_back(std::vector<int>());
+        level.push_back(std::vector<int>());
+        for (int j = 0; j < LEVELROW; ++j) {
+            currentLevel[i].push_back(0);
+            level[i].push_back(0);
+        }
+    }
+
+}
 
 void initGame(){
+    levelCreator();
     gameOver = false;
     std::copy(&level[0][0], &level[0][0] + LEVELCOL * LEVELROW, &currentLevel[0][0]);
     newPiece();
     score = 0;
+    srand(time(NULL));
+    Timer tmr;
 }
-
-
-////Everything up is checked////Everything up is checked////Everything up is checked////Everything up is checked////Everything up is checked
 
 
 
 //Match right bitmap to drawbitmap
-void updateBackground(int inputLevel[LEVELROW][LEVELCOL]){
-    for (size_t i = 0; i < LEVELROW; i++){ // Y
-        for (size_t j = 0; j < LEVELCOL; j++){ // X
+void updateBackground(std::vector< std::vector<int> > inputLevel){
+//void updateBackground(int inputLevel[LEVELROW][LEVELCOL]){
+    for (size_t i = 0; i < inputLevel.size(); i++){ // Y
+        for (size_t j = 0; j < inputLevel[0].size(); j++){ // X
             switch (inputLevel[i][j])
             {
                 case 0:
@@ -482,7 +419,7 @@ void updateBackground(int inputLevel[LEVELROW][LEVELCOL]){
 }
 
 //match color to drawbitmap
-void updatePieces(int posX, int posY, int board[4][4]){
+void updatePieces(int posX, int posY, std::vector< std::vector<int> > board){ //int board[4][4]){
     for (int i = 0; i < 4; i++){ // Y
         for (int j = 0; j < 4; j++){ // X
             switch (board[i][j]){
@@ -526,4 +463,78 @@ void updateLogic(){
     } else {
         timerPoint = 0.2;
     }
+}
+
+void screenSetup(){
+    SDL_Init(SDL_INIT_VIDEO);              // Initialize SDL2
+
+    // Create an application window with the following settings:
+    window = SDL_CreateWindow(
+            "An SDL2 window",                  // window title
+            SDL_WINDOWPOS_UNDEFINED,           // initial x position
+            SDL_WINDOWPOS_UNDEFINED,           // initial y position
+            SCREENW,                               // width, in pixels
+            SCREENH,                               // height, in pixels
+            SDL_WINDOW_OPENGL                 // flags - see below
+    );
+
+    screenSurface = SDL_GetWindowSurface( window );
+
+    // Check that the window was successfully created
+    if (window == NULL) {
+        // In the case that the window could not be made...
+        printf("Could not create window: %s\n", SDL_GetError());
+    }
+
+}
+
+int main(int argc, char* argv[]) {
+    if (argc > 1) {
+        DEBUG = true;
+    }
+
+    dgb = new Debugger(true);
+
+    //Create the Window
+    screenSetup();
+
+    //Main loop flag
+    bool quit = false;
+    Timer tmr;
+
+    //Iniate the first game
+    initGame();
+
+    //Event handler
+    SDL_Event e;
+    //While application is running
+    while(!quit) {
+        //Handle events on queue
+        while(SDL_PollEvent(&e) != 0) {
+            //User requests quit
+            if(e.type == SDL_QUIT) {
+                quit = true;
+            }else if(e.type == SDL_KEYDOWN){
+                updateKey(&e.key);
+            }
+        }
+
+
+        //updateLogic();
+        //updateWindow(currentLevel);
+
+        //Time for automatic "falling"
+        if (tmr.elapsed() > timerPoint){
+            currentPiece->direction = DOWN;
+            movePiece();
+            tmr.reset();
+        }
+
+
+    }
+
+
+    //Free and close
+    close();
+    return 0;
 }
