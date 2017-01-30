@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <time.h>
+#include <cstdlib>
 
 class Piece {
 protected:

@@ -37,9 +37,6 @@ TPiece::TPiece() {
     randomizeRotation();
 }
 
-TPiece::~TPiece() {
-    this->~Piece();
-}
 
 std::vector<std::vector<int>> TPiece::getNextRotation() {
     return representation[(rotation+1) % representation.size()];
