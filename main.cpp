@@ -4,6 +4,7 @@
 
 #include <SDL2/SDL.h>
 #include <iostream>
+#include "time.h"
 
 #include "headers/timer.h"
 #include "headers/Debugger.h"
@@ -20,6 +21,8 @@ SDL_Window *window;
 SDL_Surface* screenSurface = NULL;
 SDL_Surface* blitSurface = NULL;
 Debugger* dgb;
+
+int currentLevel[LEVELROW][LEVELCOL];
 
 //Proto
 void updateKey(SDL_KeyboardEvent *key);
@@ -76,6 +79,56 @@ void screenSetup(){
 
 }
 
+//Drawing of bitmaps
+void DrawBitmap(char *filename, int x, int y){
+    SDL_Rect dstrect;
+    dstrect.x = x;
+    dstrect.y = y;
+    dstrect.h = 16;
+    dstrect.w = 16;
+
+    //Load splash image
+    blitSurface = SDL_LoadBMP( filename );
+    SDL_BlitSurface( blitSurface, NULL, screenSurface, &dstrect);
+}
+
+//match color to drawbitmap
+void updatePieces(Piece* p){ //int board[4][4]){
+    int posX = p->getX();
+    int posY = p->getY();
+    std::vector<std::vector<int>> vec = p->getThisRotation();
+    for (int i = 0; i < 4; i++){ // Y
+        for (int j = 0; j < 4; j++){ // X
+            switch (vec[i][j]){
+                case 1:
+                    DrawBitmap("../images/red.bmp", (posY + j) * 16, (posX + i) * 16);
+                    break;
+                case 2:
+                    DrawBitmap("../images/orange.bmp", (posY + j) * 16, (posX + i) * 16);
+                    break;
+                case 3:
+                    DrawBitmap("../images/yellow.bmp", (posY + j) * 16, (posX + i) * 16);
+                    break;
+                case 4:
+                    DrawBitmap("../images/green.bmp", (posY + j) * 16, (posX + i) * 16);
+                    break;
+                case 5:
+                    DrawBitmap("../images/bblue.bmp", (posY + j) * 16, (posX + i) * 16);
+                    break;
+                case 6:
+                    DrawBitmap("../images/dblue.bmp", (posY + j) * 16, (posX + i) * 16);
+                    break;
+                case 7:
+                    DrawBitmap("../images/magneta.bmp", (posY + j) * 16, (posX + i) * 16);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+}
+
+
 int main(int argc, char* argv[]) {
     if (argc > 1) {
         DEBUG = true;
@@ -100,13 +153,14 @@ int main(int argc, char* argv[]) {
             }else if(e.type == SDL_KEYDOWN){
                 // updateKey(&e.key);
                 //Pieces::testPiece();
-                TPiece* p = new TPiece();
+                Piece* p = new TPiece();
                 p->printPiece();
+                updatePieces(p);
             }
         }
-        //updateLogic();
-        //updateWindow(currentLevel);
 
+        updateLogic();
+        updateWindow();
     }
     //Free and close
     close();

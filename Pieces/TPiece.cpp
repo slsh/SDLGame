@@ -3,7 +3,6 @@
 //
 
 #include <iostream>
-#include <vector>
 #include "../headers/Pieces/TPiece.h"
 
 TPiece::TPiece() {
