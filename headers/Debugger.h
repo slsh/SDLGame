@@ -17,6 +17,7 @@ private:
     bool debugOn;
 public:
     Debugger(bool shouldPrint);
+    ~Debugger();
     void outputDebugString(const std::string& s);
 };
 

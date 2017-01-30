@@ -59,31 +59,31 @@ void updateKey(SDL_KeyboardEvent *key){
     switch( key->keysym.sym ){
         case SDLK_UP:
             dgb->outputDebugString("VK_UP");
-            p->direction = ROTATE;
+            currentPiece->direction = ROTATE;
             tryRotatePiece();
             SDL_Delay(50);
             break;
 
         case SDLK_DOWN:
             dgb->outputDebugString("VK_DOWN");
-            p->direction = DOWN;
+            currentPiece->direction = DOWN;
             movePiece();
             break;
         case SDLK_SPACE:
             dgb->outputDebugString("VK_SPACE");
-            p->direction = ROTATE;
+            currentPiece->direction = ROTATE;
             tryRotatePiece();
             SDL_Delay(50);
             break;
         case SDLK_LEFT:
             dgb->outputDebugString("VK_LEFT");
-            p->direction = LEFT;
+            currentPiece->direction = LEFT;
             movePiece();
             SDL_Delay(20);
             break;
         case SDLK_RIGHT:
             dgb->outputDebugString("VK_RIGHT");
-            p->direction = RIGHT;
+            currentPiece->direction = RIGHT;
             movePiece();
             SDL_Delay(20);
             break;
@@ -104,7 +104,7 @@ void updateKey(SDL_KeyboardEvent *key){
 void updateWindow(std::vector< std::vector<int> > inputLevel){
 //void updateWindow(int inputLevel[LEVELROW][LEVELCOL]){
     updateBackground(inputLevel);
-    updatePieces(p->posX, p->posY, p->thisPiece);
+    updatePieces(currentPiece->posX, currentPiece->posY, currentPiece->thisPiece);
 
     //Apply the image
 
@@ -148,12 +148,12 @@ void lostGame(){
 
 Pieces newPiece(){
     if (!gameOver){
-        if (p != NULL){
-            delete p;
+        if (currentPiece != NULL){
+            delete currentPiece;
         }
-        p = new Pieces();
-        p->direction = DOWN;
-        if (!isMovementAllowed(p->thisPiece)){
+        currentPiece = new Pieces();
+        currentPiece->direction = DOWN;
+        if (!isMovementAllowed(currentPiece->thisPiece)){
             lostGame();
         }
     }
@@ -164,8 +164,8 @@ Pieces newPiece(){
 void combineArrays(){
     for (int i = 0; i < 4; ++i){
         for (int j = 0; j < 4; ++j){
-            if (p->thisPiece[i][j] > 0){
-                currentLevel[p->posX + i][p->posY + j] = p->thisPiece[i][j];
+            if (currentPiece->thisPiece[i][j] > 0){
+                currentLevel[currentPiece->posX + i][currentPiece->posY + j] = currentPiece->thisPiece[i][j];
             } else{
             }
         }
@@ -174,8 +174,8 @@ void combineArrays(){
 
 //Check if rotation is possible
 void tryRotatePiece(){
-    if (isMovementAllowed(p->nextPiece)){
-        Pieces::rotatePiece(p);
+    if (isMovementAllowed(currentPiece->nextPiece)){
+        Pieces::rotatePiece(currentPiece);
     }
 }
 
@@ -263,27 +263,27 @@ void checkRows(){
 
 //Movement of pieces
 void movePiece(){
-    if (isMovementAllowed(p->thisPiece)){
-        switch (p->direction)
+    if (isMovementAllowed(currentPiece->thisPiece)){
+        switch (currentPiece->direction)
         {
             case UP:
-                p->posX += -1;
+                currentPiece->posX += -1;
                 break;
             case DOWN:
-                p->posX += 1;
+                currentPiece->posX += 1;
                 SDL_Delay(20);
                 break;
             case LEFT:
-                p->posY += -1;
+                currentPiece->posY += -1;
                 break;
             case RIGHT:
-                p->posY += 1;
+                currentPiece->posY += 1;
                 break;
             default:
                 break;
         }
     } else{
-        if (p->direction == DOWN){
+        if (currentPiece->direction == DOWN){
             //Combine piece and board arrays
             combineArrays();
             //Check for complete rows
@@ -301,45 +301,45 @@ bool isMovementAllowed(std::vector< std::vector<int> > piece){
     for (int i = 0; i < 4; ++i){
         for (int j = 0; j < 4; ++j){
             if (piece[i][j] > 0){
-                switch (p->direction)
+                switch (currentPiece->direction)
                 {
                     case UP:
                         break;
                     case DOWN:
                         //Check for other pieces
-                        if (currentLevel[i + 1 + p->posX][j + p->posY] > 0){
+                        if (currentLevel[i + 1 + currentPiece->posX][j + currentPiece->posY] > 0){
                             return false;
                         }
                         //Check for bottom
-                        if (i + 1 + p->posX > 23){
+                        if (i + 1 + currentPiece->posX > 23){
                             return false;
                         }
                         break;
                     case LEFT:
                         //Check for other pieces
-                        if (currentLevel[i + p->posX][j - 1 + p->posY] > 0){
+                        if (currentLevel[i + currentPiece->posX][j - 1 + currentPiece->posY] > 0){
                             return false;
                         }
                         //Check MAX
-                        if (j + p->posY - 1 < 0){
+                        if (j + currentPiece->posY - 1 < 0){
                             return false;
                         }
                         break;
                     case RIGHT:
                         //Check for other pieces
-                        if (currentLevel[i + p->posX][j + 1 + p->posY] > 0){
+                        if (currentLevel[i + currentPiece->posX][j + 1 + currentPiece->posY] > 0){
                             return false;
                         }
                         //Check MAX
-                        if (j + p->posY + 1 > 11) {
+                        if (j + currentPiece->posY + 1 > 11) {
                             return false;
                         }
                         break;
                     case ROTATE:
                         //Check for other pieces and Limit
-                        if ((currentLevel[i + p->posX][j + p->posY] > 0) ||
-                            (j + p->posY - 1 < 0) ||
-                            (j + p->posY + 1 > 11) ){
+                        if ((currentLevel[i + currentPiece->posX][j + currentPiece->posY] > 0) ||
+                            (j + currentPiece->posY - 1 < 0) ||
+                            (j + currentPiece->posY + 1 > 11) ){
                             return false;
                         }
                         break;
@@ -516,6 +516,7 @@ int main(int argc, char* argv[]) {
                 quit = true;
             }else if(e.type == SDL_KEYDOWN){
                 updateKey(&e.key);
+                //Pieces::testPiece();
             }
         }
 
@@ -523,13 +524,13 @@ int main(int argc, char* argv[]) {
         //updateLogic();
         //updateWindow(currentLevel);
 
-        //Time for automatic "falling"
+        /*Time for automatic "falling"
         if (tmr.elapsed() > timerPoint){
             currentPiece->direction = DOWN;
             movePiece();
             tmr.reset();
         }
-
+        */
 
     }
 

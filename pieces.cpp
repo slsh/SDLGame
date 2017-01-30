@@ -44,10 +44,10 @@ Pieces::~Pieces(){
 
 //Rotate the piece
 void Pieces::rotatePiece(Pieces* p){
-    if (this.rotation == 3){
-        this.rotation = 0;
+    if (p->rotation == 3){
+        p->rotation = 0;
     } else{
-        this.rotation++;
+        p->rotation++;
     }
     //std::copy(&p->nextPiece[0][0], &p->nextPiece[0][0] + 4 * 4, &p->thisPiece[0][0]);
     //std::copy(&g_piece_database[p->pieceName][p->rotation][0][0], &g_piece_database[p->pieceName][p->rotation][0][0] + 4 * 4, &p->nextPiece[0][0]);
@@ -56,7 +56,7 @@ void Pieces::rotatePiece(Pieces* p){
 //Update rotation
 int Pieces::updatePiece(Pieces* p, int rotation){
     if (rotationVerifier(rotation)){
-        return g_piece_database[this.pieceName][rotation][0][0];
+        return g_piece_database[p->pieceName][rotation][0][0];
     }
     return NULL;
 }
@@ -66,7 +66,7 @@ void Pieces::printPiece(Pieces* p){
     for (int i = 0; i < 4; ++i){
         std::cout << std::endl;
         for (int j = 0; j < 4; ++j){
-            if (this.thisPiece[i][j] > 0){
+            if (p->thisPiece[i][j] > 0){
                 std::cout << ("1");
             } else {
                 std::cout << ("0");
