@@ -5,9 +5,8 @@
 #ifndef SDLGAME_PIECES_H
 #define SDLGAME_PIECES_H
 
-#endif //SDLGAME_PIECES_H
 #import <vector>
-
+#import "position.h"
 // Constant for pieces
 enum PieceID{
     G_PIECE_I,
@@ -20,50 +19,28 @@ enum PieceID{
     G_PIECE_COUNT
 };
 
-// Constant for directions
-enum Direction{
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT,
-    ROTATE
-};
-
 class Pieces {
 private:
-    int updatePiece(Pieces* p, int rotation);
-    bool rotationVerifier(int rotation);
-    PieceID randomisePiece();
-    int randomiseRotation();
-    //std::vector< std::vector<int> > thisPiece;//(4, std::vector<int>(4));
-    //std::vector< std::vector<int> > nextPiece;//(4, std::vector<int>(4));
+    PieceID pieceName;
+    Position position;
+    std::vector< std::vector<int> > thisPiece;
+    int rotation;
+    int Pieces::randomiseRotation();
 
 public:
-    PieceID pieceName;
-    Direction direction;
-
-    int posX;
-    int posY;
-    int rotation;
-    int leftEdge;
-    int rightEdge;
-
-    std::vector< std::vector<int> > thisPiece;
-    std::vector< std::vector<int> > nextPiece;
-
-    //Prototypes
-    Pieces();
+    Pieces(PieceID pieceID);
     ~Pieces();
-    void destroyPiece(Pieces* p);
-    static void rotatePiece(Pieces* p);
+
+    static Pieces getThisRotation();
+    static Pieces getNextRotation();
+    static Pieces getLastRotation();
 
     static void testPiece();
     static void printPiece(Pieces* p);
+
 };
 
-
-
-
+#endif //SDLGAME_PIECES_H
 
 
 

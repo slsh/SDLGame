@@ -1,5 +1,5 @@
 //
-// Created by johan eriksson on 26/01/2017.
+// Created by johan eriksson on 30/01/2017.
 //
 
 #include "headers/pieces.h"
@@ -12,31 +12,33 @@
 #include <cstdlib>
 
 //Constructor
-Pieces::Pieces(PieceID pieceID) {
-    pieceName = pieceID;
-    Position position = Position();
-    position.posX = 0;
-    position.posY = 4;
-    rotation = NULL;
+Pieces::Pieces() {
+    pieceName = Pieces::randomisePiece();
+    posX = 0;
+    posY = 4;
+    rotation = Pieces::randomiseRotation();
     std::vector< std::vector<int> > thisPiece;
+    std::vector< std::vector<int> > nextPiece;
 
     //Expand the vectors
     for (int k = 0; k < 4; ++k) {
         thisPiece.push_back(std::vector<int>());
+        nextPiece.push_back(std::vector<int>());
     }
 
     //Copy data to the vectors
     for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {
             thisPiece[i].push_back( g_piece_database[pieceName][rotation][i][j] );
+            nextPiece[i].push_back( g_piece_database[pieceName][rotation][i][j] );
         }
 
     }
 }
 
 Pieces::~Pieces(){
-    //Delete everything, set to null
     thisPiece.clear();
+    nextPiece.clear();
 }
 
 //Rotate the piece
@@ -46,6 +48,8 @@ void Pieces::rotatePiece(Pieces* p){
     } else{
         p->rotation++;
     }
+    //std::copy(&p->nextPiece[0][0], &p->nextPiece[0][0] + 4 * 4, &p->thisPiece[0][0]);
+    //std::copy(&g_piece_database[p->pieceName][p->rotation][0][0], &g_piece_database[p->pieceName][p->rotation][0][0] + 4 * 4, &p->nextPiece[0][0]);
 }
 
 //Update rotation
@@ -79,6 +83,11 @@ bool Pieces::rotationVerifier(int rotation){
     return true;
 }
 
+
+PieceID Pieces::randomisePiece(){
+    PieceID randomPieceValue = static_cast<PieceID>(rand() % G_PIECE_COUNT);
+    return randomPieceValue;
+}
 
 int Pieces::randomiseRotation(){
     return rand() % 4;

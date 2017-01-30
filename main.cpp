@@ -25,7 +25,7 @@ SDL_Surface* screenSurface = NULL;
 SDL_Surface* blitSurface = NULL;
 Debugger* dgb;
 
-Pieces* currentPiece;
+Pieces* currentPiece = NULL;
 Pieces* nextPiece;
 
 bool gameOver;
@@ -297,10 +297,10 @@ void movePiece(){
 
 //Check if movement is possible depending on piece direction
 //bool isMovementAllowed(int piece[4][4]){
-bool isMovementAllowed(std::vector< std::vector<int> > piece){
+bool isMovementAllowed(Pieces* piece){
     for (int i = 0; i < 4; ++i){
         for (int j = 0; j < 4; ++j){
-            if (piece[i][j] > 0){
+            if (piece->thisPiece[i][j] > 0){
                 switch (currentPiece->direction)
                 {
                     case UP:
@@ -492,16 +492,13 @@ int main(int argc, char* argv[]) {
     if (argc > 1) {
         DEBUG = true;
     }
-
-    dgb = new Debugger(true);
-
-    //Create the Window
-    screenSetup();
-
     //Main loop flag
+    dgb = new Debugger(true);
     bool quit = false;
     Timer tmr;
 
+    //Create the Window
+    screenSetup();
     //Iniate the first game
     initGame();
 
@@ -519,8 +516,6 @@ int main(int argc, char* argv[]) {
                 //Pieces::testPiece();
             }
         }
-
-
         //updateLogic();
         //updateWindow(currentLevel);
 
