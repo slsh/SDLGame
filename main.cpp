@@ -7,6 +7,7 @@
 
 #include "headers/timer.h"
 #include "headers/Debugger.h"
+#include "headers/Pieces/TPiece.h"
 
 const int SCREENH = 384;
 const int SCREENW = 192;
@@ -97,8 +98,10 @@ int main(int argc, char* argv[]) {
             if(e.type == SDL_QUIT) {
                 quit = true;
             }else if(e.type == SDL_KEYDOWN){
-                updateKey(&e.key);
+                // updateKey(&e.key);
                 //Pieces::testPiece();
+                TPiece* p = new TPiece();
+                p->printPiece();
             }
         }
         //updateLogic();

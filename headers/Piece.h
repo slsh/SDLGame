@@ -6,6 +6,7 @@
 #define SDLGAME_PIECE_H
 
 #include <vector>
+#include <time.h>
 
 class Piece {
 protected:
@@ -14,8 +15,15 @@ protected:
     int xPosition;
     int yPosition;
 public:
-    virtual Piece()= 0;
-    virtual ~Piece()= 0;
+    Piece() {
+        srand(time(NULL));
+        rotation = 0;
+        xPosition = 0;
+        yPosition = 0;
+    }
+    ~Piece() {
+        representation.clear();
+    }
     virtual std::vector<std::vector<int>> getNextRotation()= 0;
     virtual std::vector<std::vector<int>> getLastRotation()= 0;
     virtual std::vector<std::vector<int>> getThisRotation()= 0;
@@ -32,6 +40,19 @@ public:
     }
     void setY(int y) {
         yPosition = y;
+    }
+    void printPiece() {
+        for (std::vector<int> row : getThisRotation()) {
+            for (int val : row) {
+                std::cout << val;
+            }
+            std::cout << std::endl;
+        }
+    }
+
+    // Use after creation of representation
+    void randomizeRotation() {
+        rotation = rand() % (int)representation.size();
     }
 };
 
