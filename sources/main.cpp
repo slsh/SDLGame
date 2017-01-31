@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 
+#include "../headers/Game.h"
 #include "../headers/timer.h"
 #include "../headers/Debugger.h"
 #include "../headers/pieces/TPiece.h"
@@ -23,6 +24,10 @@ Debugger* dgb;
 
 bool DEBUG = false;
 
+// TODO This is for testing
+PieceFactory* pieceFactory = new StandardPieceFactory();
+Piece* p = pieceFactory->getRandomPiece();
+
 
 std::vector<std::vector<int>> level(24, std::vector<int>(12,0));
 std::vector<std::vector<int>> currentLevel(24, std::vector<int>(12,0));
@@ -34,6 +39,28 @@ void updateWindow();
 int main(int argc, char* argv[]);
 void init();
 void combineArrays();
+void updateLogic();
+void movePiece(int direction);
+
+
+
+
+
+void movePiece(int direction){
+    switch (direction){
+        case 0:
+            //isMovementAllowed();
+            break;
+        case 1:
+            break;
+        default:
+            break;
+    }
+}
+
+void updateLogic(){
+
+}
 
 void init(){
     //adjust size of vectors
@@ -50,7 +77,38 @@ void init(){
 }
 
 void updateKey(SDL_KeyboardEvent *key){
+    switch( key->keysym.sym ){
+        case SDLK_UP:
+            printf( "UpKey pressed\n" );
+            break;
 
+        case SDLK_DOWN:
+            printf( "DownKey pressed\n" );
+            break;
+
+        case SDLK_LEFT:
+            p->rotateLeft();
+            printf( "LeftKey pressed\n" );
+            break;
+
+        case SDLK_RIGHT:
+            p->rotateRight();
+            printf( "RightKey pressed\n" );
+            break;
+
+        case SDLK_KP_ENTER:
+            printf( "Enter pressed\n" );
+            break;
+
+        case SDLK_SPACE:
+            printf( "Space pressed\n" );
+            delete p;
+            p = pieceFactory->getRandomPiece();
+            break;
+
+        default:
+            break;
+    }
 }
 
 void updateWindow(){
@@ -116,8 +174,8 @@ void updatePieces(Piece* p){ //int board[4][4]){
     int posX = p->getX();
     int posY = p->getY();
     std::vector<std::vector<int>> vec = p->getThisRotation();
-    for (int i = 0; i < 4; i++){ // Y
-        for (int j = 0; j < 4; j++){ // X
+    for (int i = 0; i < p->getThisRotation().size(); i++){ // Y
+        for (int j = 0; j < vec[i].size(); j++){ // X
             switch (vec[i][j]){
                 case 1:
                     DrawBitmap("../images/red.bmp", (posY + j) * 16, (posX + i) * 16);
@@ -198,9 +256,7 @@ int main(int argc, char* argv[]) {
     bool quit = false;
     Timer tmr;
 
-    // TODO This is for testing
-    PieceFactory* pieceFactory = new StandardPieceFactory();
-    Piece* p = pieceFactory->getRandomPiece();
+
 
     //Create the Window
     screenSetup();
@@ -216,18 +272,21 @@ int main(int argc, char* argv[]) {
                 quit = true;
             }else if(e.type == SDL_KEYDOWN){
                 SDL_FillRect(screenSurface, NULL, 0);
-                // updateKey(&e.key);
+                updateKey(&e.key);
+/*
                 if (e.key.keysym.sym == SDLK_SPACE) {
                     delete p;
                     p = pieceFactory->getRandomPiece();
                 } else {
                     p->rotateRight();
                 }
+                */
+                updatePieces(p);
                 updateBackground(currentLevel);
             }
         }
 
-        //updateLogic();
+        updateLogic();
         updateWindow();
     }
     //Free and close

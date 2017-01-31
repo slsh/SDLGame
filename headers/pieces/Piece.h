@@ -27,6 +27,7 @@ public:
     void rotateLeft();
     void rotateRight();
 
+
     int getX();
     int getY();
     void setX(int x);
