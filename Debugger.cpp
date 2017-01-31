@@ -6,8 +6,13 @@
 #include "headers/Debugger.h"
 
 Debugger::Debugger(bool shouldPrint) {
-    this->debugOn = shouldPrint;
+    debugOn = shouldPrint;
 }
+
+Debugger::~Debugger(){
+
+}
+
 
 void Debugger::outputDebugString(const std::string& s) {
     if (this->debugOn) {
