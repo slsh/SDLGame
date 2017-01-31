@@ -5,7 +5,7 @@
 #ifndef SDLGAME_PIECEFACTORY_H
 #define SDLGAME_PIECEFACTORY_H
 
-#include "Piece.h"
+#include "Pieces/Piece.h"
 
 class PieceFactory {
 public:

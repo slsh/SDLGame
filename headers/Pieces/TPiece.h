@@ -1,16 +1,15 @@
 //
 // Created by larsson on 2017-01-30.
 //
+#ifndef SDLGAME_TPIECE_H
+#define SDLGAME_TPIECE_H
 
-#include <iostream>
-#include "../Piece.h"
+#include "Piece.h"
 
 class TPiece:public Piece {
 public:
     TPiece();
-    std::vector<std::vector<int>> getNextRotation();
-    std::vector<std::vector<int>> getLastRotation();
-    std::vector<std::vector<int>> getThisRotation();
-    void rotateLeft();
-    void rotateRight();
+    ~TPiece(); // This has to be declared
 };
+
+#endif //SDLGAME_TPIECE_H
