@@ -23,13 +23,31 @@ Debugger* dgb;
 
 bool DEBUG = false;
 
-int currentLevel[LEVELROW][LEVELCOL];
+
+std::vector<std::vector<int>> level(24, std::vector<int>(12,0));
+std::vector<std::vector<int>> currentLevel(24, std::vector<int>(12,0));
 
 //Proto
 void updateKey(SDL_KeyboardEvent *key);
 void close();
 void updateWindow();
 int main(int argc, char* argv[]);
+void init();
+void combineArrays();
+
+void init(){
+    //adjust size of vectors
+    for (int i = 0; i < LEVELROW; ++i) {
+        level.push_back(std::vector<int>());
+        currentLevel.push_back(std::vector<int>());
+    }
+    for (int j = 0; j < LEVELCOL; ++j) {
+        for (int i = 0; i < LEVELROW; ++i) {
+            level[i].push_back(0);
+            currentLevel[i].push_back(0);
+        }
+    }
+}
 
 void updateKey(SDL_KeyboardEvent *key){
 
@@ -129,6 +147,47 @@ void updatePieces(Piece* p){ //int board[4][4]){
     }
 }
 
+//Match right bitmap to drawbitmap
+void updateBackground(std::vector< std::vector<int> > inputLevel){
+//void updateBackground(int inputLevel[LEVELROW][LEVELCOL]){
+    for (size_t i = 0; i < inputLevel.size(); i++){ // Y
+        for (size_t j = 0; j < inputLevel[0].size(); j++){ // X
+            switch (inputLevel[i][j])
+            {
+                case 0:
+                    DrawBitmap("../images/white.bmp", j * 16, i * 16);
+                    break;
+                case 1:
+                    DrawBitmap("../images/red.bmp", j * 16, i * 16);
+                    break;
+                case 2:
+                    DrawBitmap("../images/orange.bmp", j * 16, i * 16);
+                    break;
+                case 3:
+                    DrawBitmap("../images/yellow.bmp", j * 16, i * 16);
+                    break;
+                case 4:
+                    DrawBitmap("../images/green.bmp", j * 16, i * 16);
+                    break;
+                case 5:
+                    DrawBitmap("../images/bblue.bmp", j * 16, i * 16);
+                    break;
+                case 6:
+                    DrawBitmap("../images/dblue.bmp", j * 16, i * 16);
+                    break;
+                case 7:
+                    DrawBitmap("../images/magneta.bmp", j * 16, i * 16);
+                    break;
+                case 9:
+                    DrawBitmap("../images/gray.bmp", j * 16, i * 16);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+}
 
 int main(int argc, char* argv[]) {
     if (argc > 1) {
@@ -164,7 +223,7 @@ int main(int argc, char* argv[]) {
                 } else {
                     p->rotateRight();
                 }
-                updatePieces(p);
+                updateBackground(currentLevel);
             }
         }
 
