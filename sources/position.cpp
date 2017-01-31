@@ -2,7 +2,7 @@
 // Created by johan eriksson on 30/01/2017.
 //
 
-#include "headers/position.h"
+#include "../headers/position.h"
 
 Position* createPos(){
     Position* position = new Position();

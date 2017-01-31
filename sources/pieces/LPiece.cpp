@@ -2,9 +2,9 @@
 // Created by larsson on 2017-01-30.
 //
 
-#include "../headers/Pieces/LPiece.h"
+#include "../../headers/pieces/LPiece.h"
 
-TPiece::TPiece() {
+LPiece::LPiece() {
     representation =
             {
                     {
@@ -38,4 +38,4 @@ TPiece::TPiece() {
     randomizeRotation();
 }
 
-TPiece::~TPiece() {}
+LPiece::~LPiece() {}

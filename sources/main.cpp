@@ -4,23 +4,29 @@
 
 #include <SDL2/SDL.h>
 #include <iostream>
-#include "time.h"
 
-#include "headers/timer.h"
-#include "headers/Debugger.h"
-#include "headers/Pieces/TPiece.h"
+#include "../headers/timer.h"
+#include "../headers/Debugger.h"
+#include "../headers/pieces/TPiece.h"
+#include "../headers/pieces/ZPiece.h"
+#include "../headers/pieces/SquarePiece.h"
+#include "../headers/pieces/SPiece.h"
+#include "../headers/pieces/LPiece.h"
+#include "../headers/pieces/InvertedLPiece.h"
 
 const int SCREENH = 384;
 const int SCREENW = 192;
 const int LEVELROW = 24;
 const int LEVELCOL = 12;
 
-bool DEBUG = false;
-
 SDL_Window *window;
 SDL_Surface* screenSurface = NULL;
 SDL_Surface* blitSurface = NULL;
 Debugger* dgb;
+
+bool DEBUG = false;
+
+Piece* p = new LPiece(); // TODO This is for testing
 
 int currentLevel[LEVELROW][LEVELCOL];
 
@@ -151,15 +157,14 @@ int main(int argc, char* argv[]) {
             if(e.type == SDL_QUIT) {
                 quit = true;
             }else if(e.type == SDL_KEYDOWN){
+                SDL_FillRect(screenSurface, NULL, 0);
                 // updateKey(&e.key);
-                //Pieces::testPiece();
-                Piece* p = new TPiece();
-                p->printPiece();
+                p->rotateRight();
                 updatePieces(p);
             }
         }
 
-        updateLogic();
+        //updateLogic();
         updateWindow();
     }
     //Free and close

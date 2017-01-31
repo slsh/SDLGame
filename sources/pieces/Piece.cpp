@@ -2,7 +2,7 @@
 // Created by larsson on 2017-01-31.
 //
 
-#include "../headers/Pieces/Piece.h"
+#include "../../headers/pieces/Piece.h"
 
 Piece::Piece() {
     srand(time(NULL));

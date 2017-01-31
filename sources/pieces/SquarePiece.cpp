@@ -1,41 +1,41 @@
-TPiece.cpp//
+//
 // Created by larsson on 2017-01-30.
 //
 
-#include "../headers/Pieces/SPiece.h"
+#include "../../headers/pieces/SquarePiece.h"
 
-TPiece::TPiece() {
+SquarePiece::SquarePiece() {
     representation =
             {
                     {
                             { 0, 0, 0, 0 },
-                            { 0, 4, 4, 0 },
-                            { 4, 4, 0, 0 },
+                            { 0, 2, 2, 0 },
+                            { 0, 2, 2, 0 },
                             { 0, 0, 0, 0 }
                     },
 
                     {
-                            { 4, 0, 0, 0 },
-                            { 4, 4, 0, 0 },
-                            { 0, 4, 0, 0 },
-                            { 0, 0, 0, 0 }
-                    },
-
-                    {
-                            { 0, 4, 4, 0 },
-                            { 4, 4, 0, 0 },
                             { 0, 0, 0, 0 },
+                            { 0, 2, 2, 0 },
+                            { 0, 2, 2, 0 },
                             { 0, 0, 0, 0 }
                     },
 
                     {
-                            { 0, 4, 0, 0 },
-                            { 0, 4, 4, 0 },
-                            { 0, 0, 4, 0 },
+                            { 0, 0, 0, 0 },
+                            { 0, 2, 2, 0 },
+                            { 0, 2, 2, 0 },
+                            { 0, 0, 0, 0 }
+                    },
+
+                    {
+                            { 0, 0, 0, 0 },
+                            { 0, 2, 2, 0 },
+                            { 0, 2, 2, 0 },
                             { 0, 0, 0, 0 }
                     }
             };
     randomizeRotation();
 }
 
-TPiece::~TPiece() {}
+SquarePiece::~SquarePiece() {}

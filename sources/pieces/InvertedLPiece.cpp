@@ -2,9 +2,9 @@
 // Created by larsson on 2017-01-30.
 //
 
-#include "../headers/Pieces/InvertedLPiece.h"
+#include "../../headers/pieces/InvertedLPiece.h"
 
-TPiece::TPiece() {
+InvertedLPiece::InvertedLPiece() {
     representation =
             {
                     {
@@ -38,4 +38,4 @@ TPiece::TPiece() {
     randomizeRotation();
 }
 
-TPiece::~TPiece() {}
+InvertedLPiece::~InvertedLPiece() {}

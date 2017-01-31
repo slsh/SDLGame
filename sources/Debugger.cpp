@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include "headers/Debugger.h"
+#include "../headers/Debugger.h"
 
 Debugger::Debugger(bool shouldPrint) {
     debugOn = shouldPrint;

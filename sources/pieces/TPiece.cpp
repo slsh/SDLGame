@@ -2,7 +2,7 @@
 // Created by larsson on 2017-01-30.
 //
 
-#include "../headers/Pieces/TPiece.h"
+#include "../../headers/pieces/TPiece.h"
 
 TPiece::TPiece() {
     representation =

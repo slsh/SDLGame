@@ -7,7 +7,28 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -w -lSDL2")
 endif()
 
-set(SOURCE_FILES main.cpp Debugger.cpp Pieces/TPiece.cpp Pieces/Piece.cpp)
-set(HEADER_FILES headers/Debugger.h headers/timer.h headers/Pieces/Piece.h headers/PieceFactory.h headers/Pieces/Piece.h)
+set(SOURCE_FILES
+        sources/main.cpp
+        sources/Debugger.cpp
+        sources/pieces/Piece.cpp
+        sources/pieces/InvertedLPiece.cpp
+        sources/pieces/IPiece.cpp
+        sources/pieces/LPiece.cpp
+        sources/pieces/SPiece.cpp
+        sources/pieces/SquarePiece.cpp
+        sources/pieces/TPiece.cpp
+        sources/pieces/ZPiece.cpp)
+set(HEADER_FILES
+        headers/Debugger.h
+        headers/timer.h
+        headers/PieceFactory.h
+        headers/pieces/Piece.h
+        headers/pieces/InvertedLPiece.h
+        headers/pieces/IPiece.h
+        headers/pieces/LPiece.h
+        headers/pieces/SPiece.h
+        headers/pieces/SquarePiece.h
+        headers/pieces/TPiece.h
+        headers/pieces/ZPiece.h)
 add_executable(SDLGame ${SOURCE_FILES} ${HEADER_FILES})
 
