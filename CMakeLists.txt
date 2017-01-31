@@ -8,6 +8,6 @@ else()
 endif()
 
 set(SOURCE_FILES main.cpp Debugger.cpp Pieces/TPiece.cpp Pieces/Piece.cpp)
-set(HEADER_FILES headers/Debugger.h headers/pieceDatabase.h headers/timer.h headers/Pieces/Piece.h headers/PieceFactory.h headers/Pieces/Piece.h)
+set(HEADER_FILES headers/Debugger.h headers/timer.h headers/Pieces/Piece.h headers/PieceFactory.h headers/Pieces/Piece.h)
 add_executable(SDLGame ${SOURCE_FILES} ${HEADER_FILES})
 
