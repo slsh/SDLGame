@@ -56,11 +56,10 @@ std::vector<std::vector<int>> Piece::getThisRotation() {
 }
 
 void Piece::rotateLeft() {
-
     rotation = (rotation - 1) % (int)representation.size();
     if(rotation < 0){ rotation = ((int)representation.size() -1 );} // -1 not acceptable as vector id
-
 }
+
 void Piece::rotateRight() {
     rotation = (rotation + 1) % (int)representation.size();
 

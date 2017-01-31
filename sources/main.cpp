@@ -12,6 +12,13 @@
 #include "../headers/pieces/factories/PieceFactory.h"
 #include "../headers/pieces/factories/StandardPieceFactory.h"
 
+enum Direction{
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT
+};
+
 const int SCREENH = 384;
 const int SCREENW = 192;
 const int LEVELROW = 24;
@@ -41,17 +48,31 @@ void init();
 void combineArrays();
 void updateLogic();
 void movePiece(int direction);
+void updateBackground(std::vector< std::vector<int> > inputLevel);
+void updatePieces(Piece* p);
 
 
-
-
-
-void movePiece(int direction){
+void movePiece(Direction direction){
     switch (direction){
-        case 0:
-            //isMovementAllowed();
+        case UP:
+            //isMovementAllowed(UP);
+            p->setX(p->getX() + -1);
+            p->setY(p->getY() + 0);
             break;
-        case 1:
+        case DOWN:
+            //isMovementAllowed(UP);
+            p->setX(p->getX() + 1);
+            p->setY(p->getY() + 0);
+            break;
+        case LEFT:
+            //isMovementAllowed(UP);
+            p->setX(p->getX() + 0);
+            p->setY(p->getY() + -1);
+            break;
+        case RIGHT:
+            //isMovementAllowed(UP);
+            p->setX(p->getX() + 0);
+            p->setY(p->getY() + 1);
             break;
         default:
             break;
@@ -79,31 +100,29 @@ void init(){
 void updateKey(SDL_KeyboardEvent *key){
     switch( key->keysym.sym ){
         case SDLK_UP:
-            printf( "UpKey pressed\n" );
+            movePiece(UP);
             break;
 
         case SDLK_DOWN:
-            printf( "DownKey pressed\n" );
+            movePiece(DOWN);
             break;
 
         case SDLK_LEFT:
-            p->rotateLeft();
-            printf( "LeftKey pressed\n" );
+            movePiece(LEFT);
             break;
 
         case SDLK_RIGHT:
-            p->rotateRight();
-            printf( "RightKey pressed\n" );
+            movePiece(RIGHT);
             break;
 
-        case SDLK_KP_ENTER:
-            printf( "Enter pressed\n" );
+        case SDLK_ESCAPE:
+            delete p;
+            p = pieceFactory->getRandomPiece();
             break;
 
         case SDLK_SPACE:
-            printf( "Space pressed\n" );
-            delete p;
-            p = pieceFactory->getRandomPiece();
+            //p->rotateLeft();
+            p->rotateRight();
             break;
 
         default:
@@ -112,6 +131,12 @@ void updateKey(SDL_KeyboardEvent *key){
 }
 
 void updateWindow(){
+    SDL_FillRect(blitSurface, NULL, 0);
+    SDL_FillRect(screenSurface, NULL, 0);
+    //Variables are globals, TODO Remember to fix this.
+    updatePieces(p);
+    updateBackground(currentLevel);
+
     //Apply the image
     SDL_UpdateWindowSurface( window );
 }
@@ -168,6 +193,7 @@ void DrawBitmap(char *filename, int x, int y){
     blitSurface = SDL_LoadBMP( filename );
     SDL_BlitSurface( blitSurface, NULL, screenSurface, &dstrect);
 }
+
 
 //match color to drawbitmap
 void updatePieces(Piece* p){ //int board[4][4]){
@@ -260,6 +286,10 @@ int main(int argc, char* argv[]) {
 
     //Create the Window
     screenSetup();
+    //Current time start time
+    Uint32 startTime = 0;
+    Uint32 resetTime = 0;
+
 
     //Event handler
     SDL_Event e;
@@ -273,22 +303,20 @@ int main(int argc, char* argv[]) {
             }else if(e.type == SDL_KEYDOWN){
                 SDL_FillRect(screenSurface, NULL, 0);
                 updateKey(&e.key);
-/*
-                if (e.key.keysym.sym == SDLK_SPACE) {
-                    delete p;
-                    p = pieceFactory->getRandomPiece();
-                } else {
-                    p->rotateRight();
-                }
-                */
-                updatePieces(p);
-                updateBackground(currentLevel);
             }
         }
 
+        startTime = SDL_GetTicks();
+        //Time for automatic "falling"
+        if ((startTime - resetTime) > 500){
+            resetTime = SDL_GetTicks();
+            movePiece(DOWN);
+        }
         updateLogic();
         updateWindow();
     }
+
+
     //Free and close
     close();
     return 0;
