@@ -13,7 +13,6 @@ Piece::Piece() {
 
 Piece::~Piece() {
     representation.clear();
-    std::cout << "Piece" << std::endl;
 }
 
 int Piece::getX() {

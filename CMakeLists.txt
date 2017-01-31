@@ -17,11 +17,12 @@ set(SOURCE_FILES
         sources/pieces/SPiece.cpp
         sources/pieces/SquarePiece.cpp
         sources/pieces/TPiece.cpp
-        sources/pieces/ZPiece.cpp)
+        sources/pieces/ZPiece.cpp
+        sources/pieces/factories/StandardPieceFactory.cpp)
 set(HEADER_FILES
         headers/Debugger.h
         headers/timer.h
-        headers/PieceFactory.h
+        headers/pieces/factories/PieceFactory.h
         headers/pieces/Piece.h
         headers/pieces/InvertedLPiece.h
         headers/pieces/IPiece.h
@@ -29,6 +30,7 @@ set(HEADER_FILES
         headers/pieces/SPiece.h
         headers/pieces/SquarePiece.h
         headers/pieces/TPiece.h
-        headers/pieces/ZPiece.h)
+        headers/pieces/ZPiece.h
+        headers/pieces/factories/StandardPieceFactory.h)
 add_executable(SDLGame ${SOURCE_FILES} ${HEADER_FILES})
 

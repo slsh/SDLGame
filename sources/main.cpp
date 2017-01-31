@@ -8,11 +8,8 @@
 #include "../headers/timer.h"
 #include "../headers/Debugger.h"
 #include "../headers/pieces/TPiece.h"
-#include "../headers/pieces/ZPiece.h"
-#include "../headers/pieces/SquarePiece.h"
-#include "../headers/pieces/SPiece.h"
-#include "../headers/pieces/LPiece.h"
-#include "../headers/pieces/InvertedLPiece.h"
+#include "../headers/pieces/factories/PieceFactory.h"
+#include "../headers/pieces/factories/StandardPieceFactory.h"
 
 const int SCREENH = 384;
 const int SCREENW = 192;
@@ -25,8 +22,6 @@ SDL_Surface* blitSurface = NULL;
 Debugger* dgb;
 
 bool DEBUG = false;
-
-Piece* p = new LPiece(); // TODO This is for testing
 
 int currentLevel[LEVELROW][LEVELCOL];
 
@@ -144,6 +139,10 @@ int main(int argc, char* argv[]) {
     bool quit = false;
     Timer tmr;
 
+    // TODO This is for testing
+    PieceFactory* pieceFactory = new StandardPieceFactory();
+    Piece* p = pieceFactory->getRandomPiece();
+
     //Create the Window
     screenSetup();
 
@@ -159,7 +158,12 @@ int main(int argc, char* argv[]) {
             }else if(e.type == SDL_KEYDOWN){
                 SDL_FillRect(screenSurface, NULL, 0);
                 // updateKey(&e.key);
-                p->rotateRight();
+                if (e.key.keysym.sym == SDLK_SPACE) {
+                    delete p;
+                    p = pieceFactory->getRandomPiece();
+                } else {
+                    p->rotateRight();
+                }
                 updatePieces(p);
             }
         }
