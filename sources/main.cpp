@@ -45,34 +45,38 @@ void close();
 void updateWindow();
 int main(int argc, char* argv[]);
 void init();
-void combineArrays();
+void combineVectors();
 void updateLogic();
 void movePiece(int direction);
 void updateBackground(std::vector< std::vector<int> > inputLevel);
 void updatePieces(Piece* p);
-
+bool isMovementAllowed(Direction direction);
 
 void movePiece(Direction direction){
     switch (direction){
         case UP:
-            //isMovementAllowed(UP);
-            p->setX(p->getX() + -1);
-            p->setY(p->getY() + 0);
+            if(isMovementAllowed(UP)) {
+                p->setX(p->getX() + -1);
+            }
             break;
         case DOWN:
-            //isMovementAllowed(UP);
-            p->setX(p->getX() + 1);
-            p->setY(p->getY() + 0);
+            if(isMovementAllowed(DOWN)) {
+                p->setX(p->getX() + 1);
+            }else{
+                combineVectors();
+                delete p;
+                p = pieceFactory->getRandomPiece();
+            }
             break;
         case LEFT:
-            //isMovementAllowed(UP);
-            p->setX(p->getX() + 0);
-            p->setY(p->getY() + -1);
+            if(isMovementAllowed(LEFT)) {
+                p->setY(p->getY() + -1);
+            }
             break;
         case RIGHT:
-            //isMovementAllowed(UP);
-            p->setX(p->getX() + 0);
-            p->setY(p->getY() + 1);
+            if(isMovementAllowed(RIGHT)) {
+                p->setY(p->getY() + 1);
+            }
             break;
         default:
             break;
@@ -81,6 +85,64 @@ void movePiece(Direction direction){
 
 void updateLogic(){
 
+}
+
+void combineVectors(){
+    for (int i = 0; i < 4; ++i){
+        for (int j = 0; j < 4; ++j){
+            if (p->getThisRotation()[i][j] > 0){
+                currentLevel[p->getX() + i][p->getY() + j] = p->getThisRotation()[i][j];
+            } else{
+            }
+        }
+    }
+}
+
+bool isMovementAllowed(Direction direction){
+    for (int i = 0; i < 4; ++i){
+        for (int j = 0; j < 4; ++j){
+            if (p->getThisRotation()[i][j] > 0){
+                switch (direction)
+                {
+                    case UP:
+                        break;
+                    case DOWN:
+                        //Check for bottom
+                        if (i + 1 + p->getX() > 23){
+                            return false;
+                        }
+                        //Check for other pieces
+                        if (currentLevel[i + 1 + p->getX()][j + p->getY()] > 0){
+                            return false;
+                        }
+                        break;
+                    case LEFT:
+                        //Check for other pieces
+                        if (currentLevel[i + p->getX()][j - 1 + p->getY()] > 0){
+                            return false;
+                        }
+                        //Check MAX
+                        if (j + p->getY() - 1 < 0){
+                            return false;
+                        }
+                        break;
+                    case RIGHT:
+                        //Check for other pieces
+                        if (currentLevel[i + p->getX()][j + 1 + p->getY()] > 0){
+                            return false;
+                        }
+                        //Check MAX
+                        if (j + p->getY() + 1 > 11) {
+                            return false;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+    return true;
 }
 
 void init(){
