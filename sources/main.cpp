@@ -53,8 +53,8 @@ void updatePieces(Piece* p);
 bool isMovementAllowed(Direction direction);
 void checkRows();
 void deleteRows(std::vector<int> lineNumbers);
-void DrawBitmap(char *filename, int x, int y, int height, int width);
-void DrawBackground(char *filename, int x, int y, int height, int width);
+void DrawBitmap(char *filename, int x, int y, int width, int height);
+void DrawBackground(int color, int x, int y, int width, int height);
 
 
 
@@ -249,17 +249,9 @@ void updateKey(SDL_KeyboardEvent *key){
 }
 
 void updateWindow(){
-    //Background Painter
-    SDL_Rect dstrect;
-    dstrect.x = 0;
-    dstrect.y = 0;
-    dstrect.w = SCREENW/2;
-    dstrect.h = SCREENH;
-
-    SDL_FillRect(blitSurface, NULL, 0);
-    SDL_FillRect(screenSurface, &dstrect, 0);
-    dstrect.x = 193;
-    SDL_FillRect(screenSurface, &dstrect, 255);
+    //Repaint the two backgrounds
+    DrawBackground(1, 0, 0, SCREENW/2, SCREENH);
+    DrawBackground(255, 192, 0, SCREENW/2, SCREENH);
 
     updatePieces(p);                //Update the falling piece
     updateBackground(currentLevel); //Update the LEVEL background
@@ -309,7 +301,7 @@ void screenSetup(){
 }
 
 //Drawing of bitmaps
-void DrawBitmap(char *filename, int x, int y, int height, int width){
+void DrawBitmap(char *filename, int x, int y, int width, int height){
     SDL_Rect dstrect;
     dstrect.x = x;
     dstrect.y = y;
@@ -321,7 +313,7 @@ void DrawBitmap(char *filename, int x, int y, int height, int width){
     SDL_BlitSurface( blitSurface, NULL, screenSurface, &dstrect);
 }
 
-void DrawBackground(char *filename, int x, int y, int height, int width){
+void DrawBackground(int color, int x, int y, int width, int height){
     SDL_Rect dstrect;
     dstrect.x = x;
     dstrect.y = y;
@@ -329,8 +321,7 @@ void DrawBackground(char *filename, int x, int y, int height, int width){
     dstrect.h = height;
 
     //Load splash image
-    SDL_FillRect(blitSurface, NULL, 1);
-    SDL_BlitSurface( blitSurface, NULL, screenSurface, NULL);
+    SDL_FillRect(screenSurface, &dstrect, color);
 }
 
 //match color to drawbitmap
