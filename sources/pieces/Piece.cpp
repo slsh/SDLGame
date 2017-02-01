@@ -8,7 +8,7 @@ Piece::Piece() {
     srand(time(NULL));
     rotation = 0;
     xPosition = 0;
-    yPosition = 0;
+    yPosition = 4 ;
 }
 
 Piece::~Piece() {

@@ -51,6 +51,76 @@ void movePiece(int direction);
 void updateBackground(std::vector< std::vector<int> > inputLevel);
 void updatePieces(Piece* p);
 bool isMovementAllowed(Direction direction);
+void checkRows();
+void deleteRows(int filled[4]);
+
+//Delete rows
+void deleteRows(std::vector<int> lineNumbers){
+    //Locate the rows to be deleted, move them to array toDelete
+    std::vector< std::vector<int> > toDelete(24, std::vector<int>(12,0));
+    std::copy(currentLevel.begin(), currentLevel.end(), toDelete.begin()); //Copy current state
+    /*
+    //std::copy(&currentLevel[0][0], &currentLevel[0][0] + LEVELCOL * LEVELROW, &toDelete[0][0]);
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 4; ++j) {
+            toDelete[i][j] = currentLevel[i][j];
+        }
+    }
+    */
+    for (int i = 0; i < 4; i++){
+        if (lineNumbers[i] > 0){
+            for (int j = 0; j < LEVELCOL; j++){
+                toDelete[lineNumbers[i]][j] = 9;
+            }
+        }
+    }
+
+
+    //Actual removal in the new array
+    for (int i = LEVELROW -1; i > 0; i--){
+        if (toDelete[i][0] == 9){
+            for (int j = i; j > 0; j--){
+                for (int k = 0; k < LEVELCOL; k++){
+                    toDelete[j][k] = toDelete[j - 1][k];
+                }
+            }
+            //Move back one step on delete
+            i++;
+        }
+    }
+    std::copy(toDelete.begin(), toDelete.end(), currentLevel.begin()); //Copy current state
+}
+
+//Check for complete rows
+void checkRows(){
+    std::vector<int> lineNumbers(5, -1);
+    bool completeRow;
+    bool aRowIsFilled = false;
+    int j, filledRow = 0;
+    for (int i = 0; i < LEVELROW; i++){
+        completeRow = true;
+        j = 0;
+        while (completeRow){
+            if (currentLevel[i][j] == 0){
+                completeRow = false;
+            } else{
+                j++;
+            }
+            if (j == LEVELCOL){
+                break;
+            }
+        }
+        //Saved fill rows, max 4 as "floating rows" are allowed
+        if (completeRow){
+            lineNumbers[filledRow] = i;
+            filledRow++;
+            aRowIsFilled = true;
+        }
+    }
+    if (aRowIsFilled){
+        deleteRows(lineNumbers);
+    }
+}
 
 void movePiece(Direction direction){
     switch (direction){
@@ -64,6 +134,7 @@ void movePiece(Direction direction){
                 p->setX(p->getX() + 1);
             }else{
                 combineVectors();
+                checkRows();
                 delete p;
                 p = pieceFactory->getRandomPiece();
             }
