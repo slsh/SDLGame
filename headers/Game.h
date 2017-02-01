@@ -7,29 +7,64 @@
 
 #include <SDL2/SDL.h>
 
-class Game
-{
+#include <iostream>
+#include "../headers/timer.h"
+#include "../headers/Debugger.h"
+#include "../headers/pieces/TPiece.h"
+#include "../headers/pieces/factories/PieceFactory.h"
+#include "../headers/pieces/factories/StandardPieceFactory.h"
+
+
+class Game {
 public:
-    Game() {}
+    enum Direction{
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT
+    };
+
+    Game();
     ~Game() {}
 
     // simply set the running variable to true
-    bool init(const char* title, int xpos, int ypos, int width, int height, int flags);
-    void init() { gameRunning = true; }
-    void render(){}
-    void update(){}
-    void handleEvents(){}
-    void clean(){}
+    void init();
+    void close();
+
+    //Prototypes
+    void updateKey(SDL_KeyboardEvent *key);
+    void screenSetup();
+    void updateWindow();
+    void combineVectors();
+    void updateLogic();
+    void movePiece(Direction direction);
+    void updateBackground(std::vector< std::vector<int> > inputLevel);
+    void updatePieces(Piece* p);
+    bool isMovementAllowed(Direction direction);
+    void checkRows();
+    void deleteRows(std::vector<int> lineNumbers);
+    void DrawBitmap(char *filename, int x, int y, int width, int height);
+    void DrawBackground(int color, int x, int y, int width, int height);
 
     // a function to access the private running variable
-
     bool isRunning() { return gameRunning; }
+
+    // TODO This is for testing
+    PieceFactory* pieceFactory = new StandardPieceFactory();
+    Piece* p = pieceFactory->getRandomPiece();
+    //std::vector<std::vector<int>> level(24, std::vector<int>(12,0));
+    //std::vector<std::vector<int>> currentLevel(24, std::vector<int>(12,0));
 
 private:
     SDL_Window *window;
     SDL_Surface* screenSurface = NULL;
     SDL_Surface* blitSurface = NULL;
-
+    const int SCREENH = 384;
+    const int SCREENW = 192 + 192;
+    const int LEVELROW = 24;
+    const int LEVELCOL = 12;
+    //std::vector<std::vector<int>> currentLevel;//(24, std::vector<int>(12,0));
+    //std::vector<std::vector<int>> currentLevel;//(24, std::vector<int>(12,0));
     bool gameRunning;
 };
 

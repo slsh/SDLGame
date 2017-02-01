@@ -10,6 +10,7 @@ endif()
 set(SOURCE_FILES
         sources/main.cpp
         sources/Debugger.cpp
+        sources/Game.cpp
         sources/pieces/Piece.cpp
         sources/pieces/InvertedLPiece.cpp
         sources/pieces/IPiece.cpp
@@ -22,6 +23,7 @@ set(SOURCE_FILES
 set(HEADER_FILES
         headers/Debugger.h
         headers/timer.h
+        headers/Game.h
         headers/pieces/factories/PieceFactory.h
         headers/pieces/Piece.h
         headers/pieces/InvertedLPiece.h
