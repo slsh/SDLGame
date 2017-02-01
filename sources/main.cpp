@@ -20,15 +20,16 @@ enum Direction{
 };
 
 const int SCREENH = 384;
-const int SCREENW = 192;
+const int SCREENW = 192 + 192;
 const int LEVELROW = 24;
 const int LEVELCOL = 12;
 
 SDL_Window *window;
 SDL_Surface* screenSurface = NULL;
 SDL_Surface* blitSurface = NULL;
-Debugger* dgb;
 
+//Debugger
+Debugger* dgb;
 bool DEBUG = false;
 
 // TODO This is for testing
@@ -36,37 +37,33 @@ PieceFactory* pieceFactory = new StandardPieceFactory();
 Piece* p = pieceFactory->getRandomPiece();
 
 
-std::vector<std::vector<int>> level(24, std::vector<int>(12,0));
+//std::vector<std::vector<int>> level(24, std::vector<int>(12,0));
 std::vector<std::vector<int>> currentLevel(24, std::vector<int>(12,0));
 
-//Proto
+//Prototypes
 void updateKey(SDL_KeyboardEvent *key);
 void close();
 void updateWindow();
 int main(int argc, char* argv[]);
-void init();
 void combineVectors();
 void updateLogic();
-void movePiece(int direction);
+void movePiece(Direction direction);
 void updateBackground(std::vector< std::vector<int> > inputLevel);
 void updatePieces(Piece* p);
 bool isMovementAllowed(Direction direction);
 void checkRows();
-void deleteRows(int filled[4]);
+void deleteRows(std::vector<int> lineNumbers);
+void DrawBitmap(char *filename, int x, int y, int height, int width);
+void DrawBackground(char *filename, int x, int y, int height, int width);
+
+
 
 //Delete rows
 void deleteRows(std::vector<int> lineNumbers){
     //Locate the rows to be deleted, move them to array toDelete
     std::vector< std::vector<int> > toDelete(24, std::vector<int>(12,0));
-    std::copy(currentLevel.begin(), currentLevel.end(), toDelete.begin()); //Copy current state
-    /*
-    //std::copy(&currentLevel[0][0], &currentLevel[0][0] + LEVELCOL * LEVELROW, &toDelete[0][0]);
-    for (int i = 0; i < 4; ++i) {
-        for (int j = 0; j < 4; ++j) {
-            toDelete[i][j] = currentLevel[i][j];
-        }
-    }
-    */
+    std::copy(currentLevel.begin(), currentLevel.end(), toDelete.begin()); //Copy current level-state
+
     for (int i = 0; i < 4; i++){
         if (lineNumbers[i] > 0){
             for (int j = 0; j < LEVELCOL; j++){
@@ -74,7 +71,6 @@ void deleteRows(std::vector<int> lineNumbers){
             }
         }
     }
-
 
     //Actual removal in the new array
     for (int i = LEVELROW -1; i > 0; i--){
@@ -84,14 +80,16 @@ void deleteRows(std::vector<int> lineNumbers){
                     toDelete[j][k] = toDelete[j - 1][k];
                 }
             }
-            //Move back one step on delete
+            //Move back one step on delete as lines changes
             i++;
         }
     }
-    std::copy(toDelete.begin(), toDelete.end(), currentLevel.begin()); //Copy current state
+    std::copy(toDelete.begin(), toDelete.end(), currentLevel.begin()); //Copy the new vector back to current level state
 }
 
-//Check for complete rows
+/*
+ * Check for complete rows - store in std::vector lineNumbers
+ */
 void checkRows(){
     std::vector<int> lineNumbers(5, -1);
     bool completeRow;
@@ -118,7 +116,7 @@ void checkRows(){
         }
     }
     if (aRowIsFilled){
-        deleteRows(lineNumbers);
+        deleteRows(lineNumbers); //Pass any filled rows to delete function
     }
 }
 
@@ -216,19 +214,6 @@ bool isMovementAllowed(Direction direction){
     return true;
 }
 
-void init(){
-    //adjust size of vectors
-    for (int i = 0; i < LEVELROW; ++i) {
-        level.push_back(std::vector<int>());
-        currentLevel.push_back(std::vector<int>());
-    }
-    for (int j = 0; j < LEVELCOL; ++j) {
-        for (int i = 0; i < LEVELROW; ++i) {
-            level[i].push_back(0);
-            currentLevel[i].push_back(0);
-        }
-    }
-}
 
 void updateKey(SDL_KeyboardEvent *key){
     switch( key->keysym.sym ){
@@ -264,11 +249,20 @@ void updateKey(SDL_KeyboardEvent *key){
 }
 
 void updateWindow(){
+    //Background Painter
+    SDL_Rect dstrect;
+    dstrect.x = 0;
+    dstrect.y = 0;
+    dstrect.w = SCREENW/2;
+    dstrect.h = SCREENH;
+
     SDL_FillRect(blitSurface, NULL, 0);
-    SDL_FillRect(screenSurface, NULL, 0);
-    //Variables are globals, TODO Remember to fix this.
-    updatePieces(p);
-    updateBackground(currentLevel);
+    SDL_FillRect(screenSurface, &dstrect, 0);
+    dstrect.x = 193;
+    SDL_FillRect(screenSurface, &dstrect, 255);
+
+    updatePieces(p);                //Update the falling piece
+    updateBackground(currentLevel); //Update the LEVEL background
 
     //Apply the image
     SDL_UpdateWindowSurface( window );
@@ -315,18 +309,29 @@ void screenSetup(){
 }
 
 //Drawing of bitmaps
-void DrawBitmap(char *filename, int x, int y){
+void DrawBitmap(char *filename, int x, int y, int height, int width){
     SDL_Rect dstrect;
     dstrect.x = x;
     dstrect.y = y;
-    dstrect.h = 16;
-    dstrect.w = 16;
+    //dstrect.h = height;
+    //dstrect.w = width;
 
     //Load splash image
     blitSurface = SDL_LoadBMP( filename );
     SDL_BlitSurface( blitSurface, NULL, screenSurface, &dstrect);
 }
 
+void DrawBackground(char *filename, int x, int y, int height, int width){
+    SDL_Rect dstrect;
+    dstrect.x = x;
+    dstrect.y = y;
+    dstrect.w = width;
+    dstrect.h = height;
+
+    //Load splash image
+    SDL_FillRect(blitSurface, NULL, 1);
+    SDL_BlitSurface( blitSurface, NULL, screenSurface, NULL);
+}
 
 //match color to drawbitmap
 void updatePieces(Piece* p){ //int board[4][4]){
@@ -337,25 +342,25 @@ void updatePieces(Piece* p){ //int board[4][4]){
         for (int j = 0; j < vec[i].size(); j++){ // X
             switch (vec[i][j]){
                 case 1:
-                    DrawBitmap("../images/red.bmp", (posY + j) * 16, (posX + i) * 16);
+                    DrawBitmap((char*)"../images/red.bmp", (posY + j) * 16, (posX + i) * 16, 16, 16);
                     break;
                 case 2:
-                    DrawBitmap("../images/orange.bmp", (posY + j) * 16, (posX + i) * 16);
+                    DrawBitmap((char*)"../images/orange.bmp", (posY + j) * 16, (posX + i) * 16, 16, 16);
                     break;
                 case 3:
-                    DrawBitmap("../images/yellow.bmp", (posY + j) * 16, (posX + i) * 16);
+                    DrawBitmap((char*)"../images/yellow.bmp", (posY + j) * 16, (posX + i) * 16, 16, 16);
                     break;
                 case 4:
-                    DrawBitmap("../images/green.bmp", (posY + j) * 16, (posX + i) * 16);
+                    DrawBitmap((char*)"../images/green.bmp", (posY + j) * 16, (posX + i) * 16, 16, 16);
                     break;
                 case 5:
-                    DrawBitmap("../images/bblue.bmp", (posY + j) * 16, (posX + i) * 16);
+                    DrawBitmap((char*)"../images/bblue.bmp", (posY + j) * 16, (posX + i) * 16, 16, 16);
                     break;
                 case 6:
-                    DrawBitmap("../images/dblue.bmp", (posY + j) * 16, (posX + i) * 16);
+                    DrawBitmap((char*)"../images/dblue.bmp", (posY + j) * 16, (posX + i) * 16, 16, 16);
                     break;
                 case 7:
-                    DrawBitmap("../images/magneta.bmp", (posY + j) * 16, (posX + i) * 16);
+                    DrawBitmap((char*)"../images/magneta.bmp", (posY + j) * 16, (posX + i) * 16, 16, 16);
                     break;
                 default:
                     break;
@@ -366,37 +371,36 @@ void updatePieces(Piece* p){ //int board[4][4]){
 
 //Match right bitmap to drawbitmap
 void updateBackground(std::vector< std::vector<int> > inputLevel){
-//void updateBackground(int inputLevel[LEVELROW][LEVELCOL]){
-    for (size_t i = 0; i < inputLevel.size(); i++){ // Y
-        for (size_t j = 0; j < inputLevel[0].size(); j++){ // X
+    for (int i = 0; i < inputLevel.size(); i++){ // Y
+        for (int j = 0; j < inputLevel[0].size(); j++){ // X
             switch (inputLevel[i][j])
             {
                 case 0:
-                    DrawBitmap("../images/white.bmp", j * 16, i * 16);
+                    DrawBitmap((char*)"../images/white.bmp", j * 16, i * 16, 16, 16);
                     break;
                 case 1:
-                    DrawBitmap("../images/red.bmp", j * 16, i * 16);
+                    DrawBitmap((char*)"../images/red.bmp", j * 16, i * 16, 16, 16);
                     break;
                 case 2:
-                    DrawBitmap("../images/orange.bmp", j * 16, i * 16);
+                    DrawBitmap((char*)"../images/orange.bmp", j * 16, i * 16, 16, 16);
                     break;
                 case 3:
-                    DrawBitmap("../images/yellow.bmp", j * 16, i * 16);
+                    DrawBitmap((char*)"../images/yellow.bmp", j * 16, i * 16, 16, 16);
                     break;
                 case 4:
-                    DrawBitmap("../images/green.bmp", j * 16, i * 16);
+                    DrawBitmap((char*)"../images/green.bmp", j * 16, i * 16, 16, 16);
                     break;
                 case 5:
-                    DrawBitmap("../images/bblue.bmp", j * 16, i * 16);
+                    DrawBitmap((char*)"../images/bblue.bmp", j * 16, i * 16, 16, 16);
                     break;
                 case 6:
-                    DrawBitmap("../images/dblue.bmp", j * 16, i * 16);
+                    DrawBitmap((char*)"../images/dblue.bmp", j * 16, i * 16, 16, 16);
                     break;
                 case 7:
-                    DrawBitmap("../images/magneta.bmp", j * 16, i * 16);
+                    DrawBitmap((char*)"../images/magneta.bmp", j * 16, i * 16, 16, 16);
                     break;
                 case 9:
-                    DrawBitmap("../images/gray.bmp", j * 16, i * 16);
+                    DrawBitmap((char*)"../images/gray.bmp", j * 16, i * 16, 16, 16);
                     break;
                 default:
                     break;

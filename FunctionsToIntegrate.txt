@@ -532,3 +532,18 @@ int main(int argc, char* argv[]) {
     close();
     return 0;
 }
+
+
+
+//Expanding vectors by for
+    //adjust size of vectors
+    for (int i = 0; i < LEVELROW; ++i) {
+        level.push_back(std::vector<int>());
+        currentLevel.push_back(std::vector<int>());
+    }
+    for (int j = 0; j < LEVELCOL; ++j) {
+        for (int i = 0; i < LEVELROW; ++i) {
+            level[i].push_back(0);
+            currentLevel[i].push_back(0);
+        }
+    }
