@@ -39,19 +39,19 @@ unsigned long long Game::getScore(){
     } else if (score < 60000){
         return 5;
     } else if (score < 75000){
-        return 6;
-    } else if (score < 90000){
         return 7;
-    } else if (score < 105000){
-        return 8;
-    } else if (score < 120000){
+    } else if (score < 90000){
         return 9;
+    } else if (score < 105000){
+        return 11;
+    } else if (score < 120000){
+        return 14;
     } else if (score < 135000){
-        return 10;
+        return 17;
     } else if (score < 150000){
-        return 15;
-    } else if (score < 160000){
         return 20;
+    } else if (score < 160000){
+        return 25;
     }
     return 2;
 }
