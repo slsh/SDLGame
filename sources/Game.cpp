@@ -206,7 +206,7 @@ void Game::updateKey(SDL_KeyboardEvent *key){
 void Game::updateWindow(){
     //Repaint the two backgrounds
     DrawBackground(1, 0, 0, SCREENW/2, SCREENH);
-    DrawBackground(255, 192, 0, SCREENW/2, SCREENH);
+    DrawBackground(255, 192, 0, SCREENW/2, SCREENH); //TODO change to white line
 
     updatePieces(p);                //Update the falling piece
     updateBackground(currentLevel); //Update the LEVEL background
