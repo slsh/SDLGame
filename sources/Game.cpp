@@ -28,6 +28,34 @@ void Game::init(){
     score = 0;
 }
 
+// Basic tracker of automatic speed
+unsigned long long Game::getScore(){
+    if (score < 15000){
+        return 2;
+    } else if (score < 30000){
+        return 3;
+    } else if (score < 45000){
+        return 4;
+    } else if (score < 60000){
+        return 5;
+    } else if (score < 75000){
+        return 6;
+    } else if (score < 90000){
+        return 7;
+    } else if (score < 105000){
+        return 8;
+    } else if (score < 120000){
+        return 9;
+    } else if (score < 135000){
+        return 10;
+    } else if (score < 150000){
+        return 15;
+    } else if (score < 160000){
+        return 20;
+    }
+    return 2;
+}
+
 void Game::updateWindow(){
     graphicManager->updateWindow(p, np,currentLevel);
 }

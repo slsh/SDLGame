@@ -37,6 +37,7 @@ public:
     // a function to access the private running variable
     bool isRunning() { return gameRunning; }
 
+    unsigned long long getScore();
 
 private:
     const int LEVELROW = 24;

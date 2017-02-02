@@ -24,7 +24,6 @@ int main(int argc, char* argv[]) {
     Uint32 resetTime = 0;
     //Event handler
     SDL_Event e;
-
     g_game->init();
     while(g_game->isRunning()) {
         while (SDL_PollEvent(&e) != 0) {
@@ -39,7 +38,8 @@ int main(int argc, char* argv[]) {
         }
         startTime = SDL_GetTicks();
 
-        if ((startTime - resetTime) > 500){
+
+        if ((startTime - resetTime) > 1000 / g_game->getScore()){
             resetTime = SDL_GetTicks();
             g_game->movePiece(g_game->DOWN);
         }
