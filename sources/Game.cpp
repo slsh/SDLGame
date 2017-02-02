@@ -3,19 +3,28 @@
 //
 
 #include "../headers/Game.h"
+#include "../headers/GraphicManager.h"
 
 std::vector<std::vector<int>> currentLevel(24, std::vector<int>(12,0)); //TODO Move back to private
 
 Game::Game() { }
 
 void Game::init(){
-    Game::screenSetup();
+    graphicManager = new GraphicManager();
     gameRunning = true;
     p = pieceFactory->getRandomPiece();
     p->randomizeRotation();
-    p->setX(4);
-    p->setY(0);
+    p->setX(0);
+    p->setY(4);
     np = pieceFactory->getRandomPiece();
+}
+
+void Game::updateWindow(){
+    graphicManager->updateWindow(p, np,currentLevel);
+}
+
+void Game::close(){
+    graphicManager->close();
 }
 
 //Delete rows
@@ -141,7 +150,7 @@ bool Game::isMovementAllowed(Direction direction){
                         break;
                     case DOWN:
                         //Check for bottom
-                        if (i + 1 + p->getX() > 23){
+                        if (i + 1 + p->getX() > 23){ //TODO static value
                             return false;
                         }
                         //Check for other pieces
@@ -165,7 +174,7 @@ bool Game::isMovementAllowed(Direction direction){
                             return false;
                         }
                         //Check MAX
-                        if (j + p->getY() + 1 > 11) {
+                        if (j + p->getY() + 1 > 11) {//TODO static value
                             return false;
                         }
                         break;
@@ -214,160 +223,4 @@ void Game::updateKey(SDL_KeyboardEvent *key){
         default:
             break;
     }
-}
-
-void Game::updateWindow(){
-    //Repaint the two backgrounds
-    DrawBackground(GREY_LIGHT, 0, 0, SCREENW/2, SCREENH);
-    DrawBackground(GREY_DARK, 198, 0, SCREENW/2, SCREENH);
-    DrawBackground(WHITE, 192, 0, 5, SCREENH); //TODO change to white line
-
-    updatePieces(p);                //Update the falling piece
-    updatePieces(np);               //Update the next piece
-    updateBackground(currentLevel); //Update the LEVEL background
-
-    //Apply the image
-    SDL_UpdateWindowSurface( window );
-}
-
-void Game::close()
-{
-    //Deallocate surface
-    SDL_FreeSurface( screenSurface );
-    screenSurface = NULL;
-
-    SDL_FreeSurface( blitSurface );
-    blitSurface = NULL;
-
-    //Destroy window
-    SDL_DestroyWindow( window );
-    window = NULL;
-
-    gameRunning = false;
-    SDL_Quit();
-}
-
-
-void Game::screenSetup(){
-    SDL_Init(SDL_INIT_VIDEO);              // Initialize SDL2
-
-    // Create an application window with the following settings:
-    window = SDL_CreateWindow(
-            "An SDL2 window",                  // window title
-            SDL_WINDOWPOS_UNDEFINED,           // initial x position
-            SDL_WINDOWPOS_UNDEFINED,           // initial y position
-            SCREENW,                               // width, in pixels
-            SCREENH,                               // height, in pixels
-            SDL_WINDOW_OPENGL                 // flags - see below
-    );
-
-    screenSurface = SDL_GetWindowSurface( window );
-
-    // Check that the window was successfully created
-    if (window == NULL) {
-        // In the case that the window could not be made...
-        printf("Could not create window: %s\n", SDL_GetError());
-    }
-
-}
-
-//Drawing of bitmaps
-void Game::DrawBitmap(char *filename, int x, int y, int width, int height){
-    SDL_Rect dstrect;
-    dstrect.x = x;
-    dstrect.y = y;
-    //dstrect.h = height;
-    //dstrect.w = width;
-
-    //Load splash image
-    blitSurface = SDL_LoadBMP( filename );
-    SDL_BlitSurface( blitSurface, NULL, screenSurface, &dstrect);
-}
-
-void Game::DrawBackground(int color, int x, int y, int width, int height){
-    SDL_Rect dstrect;
-    dstrect.x = x;
-    dstrect.y = y;
-    dstrect.w = width;
-    dstrect.h = height;
-
-    //Load splash image
-    SDL_FillRect(screenSurface, &dstrect, color);
-}
-
-//match color to drawbitmap
-void Game::updatePieces(Piece* p){ //int board[4][4]){
-    int posX = p->getX();
-    int posY = p->getY();
-    std::vector<std::vector<int>> vec = p->getThisRotation();
-    for (int i = 0; i < p->getThisRotation().size(); i++){ // Y
-        for (int j = 0; j < vec[i].size(); j++){ // X
-            switch (vec[i][j]){
-                case 1:
-                    DrawBitmap((char*)"../images/red.bmp", (posY + j) * 16, (posX + i) * 16, 16, 16);
-                    break;
-                case 2:
-                    DrawBitmap((char*)"../images/orange.bmp", (posY + j) * 16, (posX + i) * 16, 16, 16);
-                    break;
-                case 3:
-                    DrawBitmap((char*)"../images/yellow.bmp", (posY + j) * 16, (posX + i) * 16, 16, 16);
-                    break;
-                case 4:
-                    DrawBitmap((char*)"../images/green.bmp", (posY + j) * 16, (posX + i) * 16, 16, 16);
-                    break;
-                case 5:
-                    DrawBitmap((char*)"../images/bblue.bmp", (posY + j) * 16, (posX + i) * 16, 16, 16);
-                    break;
-                case 6:
-                    DrawBitmap((char*)"../images/dblue.bmp", (posY + j) * 16, (posX + i) * 16, 16, 16);
-                    break;
-                case 7:
-                    DrawBitmap((char*)"../images/magneta.bmp", (posY + j) * 16, (posX + i) * 16, 16, 16);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-}
-
-//Match right bitmap to drawbitmap
-void Game::updateBackground(std::vector< std::vector<int> > inputLevel){
-    for (int i = 0; i < inputLevel.size(); i++){ // Y
-        for (int j = 0; j < inputLevel[0].size(); j++){ // X
-            switch (inputLevel[i][j])
-            {
-                case 0:
-                    DrawBitmap((char*)"../images/white.bmp", j * 16, i * 16, 16, 16);
-                    break;
-                case 1:
-                    DrawBitmap((char*)"../images/red.bmp", j * 16, i * 16, 16, 16);
-                    break;
-                case 2:
-                    DrawBitmap((char*)"../images/orange.bmp", j * 16, i * 16, 16, 16);
-                    break;
-                case 3:
-                    DrawBitmap((char*)"../images/yellow.bmp", j * 16, i * 16, 16, 16);
-                    break;
-                case 4:
-                    DrawBitmap((char*)"../images/green.bmp", j * 16, i * 16, 16, 16);
-                    break;
-                case 5:
-                    DrawBitmap((char*)"../images/bblue.bmp", j * 16, i * 16, 16, 16);
-                    break;
-                case 6:
-                    DrawBitmap((char*)"../images/dblue.bmp", j * 16, i * 16, 16, 16);
-                    break;
-                case 7:
-                    DrawBitmap((char*)"../images/magneta.bmp", j * 16, i * 16, 16, 16);
-                    break;
-                case 9:
-                    DrawBitmap((char*)"../images/gray.bmp", j * 16, i * 16, 16, 16);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
 }

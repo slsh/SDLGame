@@ -440,7 +440,7 @@ void updatePieces(int posX, int posY, std::vector< std::vector<int> > board){ //
                     DrawBitmap("../images/dblue.bmp", (posY + j) * 16, (posX + i) * 16);
                     break;
                 case 7:
-                    DrawBitmap("../images/magneta.bmp", (posY + j) * 16, (posX + i) * 16);
+                    drawBitmap("../images/magneta.bmp", (posY + j) * 16, (posX + i) * 16);
                     break;
                 default:
                     break;
