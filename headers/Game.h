@@ -27,38 +27,32 @@ public:
     Game();
     ~Game() {}
 
-    // simply set the running variable to true
-    void init();
-
     //Prototypes
+    void init();
     void updateKey(SDL_KeyboardEvent *key);
-
-    void combineVectors();
-    void updateLogic();
     void movePiece(Direction direction);
-
-    bool isMovementAllowed(Direction direction);
-    void checkRows();
-    void deleteRows(std::vector<int> lineNumbers);
     void updateWindow();
     void close();
-
     // a function to access the private running variable
     bool isRunning() { return gameRunning; }
 
-    // TODO This is for testing
+
+private:
+    const int LEVELROW = 24;
+    const int LEVELCOL = 12;
+    bool gameRunning;
+    GraphicManager* graphicManager;
+
     PieceFactory* pieceFactory = new StandardPieceFactory();
     Piece* p;
     Piece* np;
     //Board* currentLevel;
 
-    const int LEVELROW = 24;
-    const int LEVELCOL = 12;
-    GraphicManager* graphicManager;
+    void combineVectors();
+    bool isMovementAllowed(Direction direction);
+    void checkRows();
+    void deleteRows(std::vector<int> lineNumbers);
 
-private:
-
-    bool gameRunning;
 };
 
 #endif //SDLGAME_GAME_H

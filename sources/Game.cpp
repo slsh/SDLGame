@@ -7,17 +7,21 @@
 
 std::vector<std::vector<int>> currentLevel(24, std::vector<int>(12,0)); //TODO Move back to private
 
-Game::Game() { }
-
-void Game::init(){
+Game::Game() {
+    //Create window/gfx object
     graphicManager = new GraphicManager();
     gameRunning = true;
+}
+
+void Game::init(){
+    //Create initial two pieces
     p = pieceFactory->getRandomPiece();
     p->randomizeRotation();
     p->setX(0);
     p->setY(4);
     np = pieceFactory->getRandomPiece();
 }
+
 
 void Game::updateWindow(){
     graphicManager->updateWindow(p, np,currentLevel);
@@ -27,7 +31,7 @@ void Game::close(){
     graphicManager->close();
 }
 
-//Delete rows
+//Delete rows using 2 vectors for "flash effect"
 void Game::deleteRows(std::vector<int> lineNumbers){
     //Locate the rows to be deleted, move them to array toDelete
     std::vector< std::vector<int> > toDelete(24, std::vector<int>(12,0));
@@ -57,7 +61,7 @@ void Game::deleteRows(std::vector<int> lineNumbers){
 }
 
 /*
- * Check for complete rows - store in std::vector lineNumbers
+ * Check for complete rows - store in std::vector lineNumbers and call deleteRows
  */
 void Game::checkRows(){
     std::vector<int> lineNumbers(5, -1);
@@ -102,6 +106,7 @@ void Game::movePiece(Game::Direction direction){
             }else{
                 combineVectors();
                 checkRows();
+                //Switch p and np after rows are checked
                 delete p;
                 p = np;
                 p->randomizeRotation();
@@ -123,10 +128,6 @@ void Game::movePiece(Game::Direction direction){
         default:
             break;
     }
-}
-
-void Game::updateLogic(){
-
 }
 
 void Game::combineVectors(){
@@ -207,12 +208,12 @@ void Game::updateKey(SDL_KeyboardEvent *key){
             break;
 
         case SDLK_ESCAPE:
-            delete p;
-            p = np;
-            p->randomizeRotation();
-            p->setX(0);
-            p->setY(4);
-            np = pieceFactory->getRandomPiece();
+            delete p; //TODO Delete
+            p = np; //TODO Delete
+            p->randomizeRotation(); //TODO Delete
+            p->setX(0); //TODO Delete
+            p->setY(4); //TODO Delete
+            np = pieceFactory->getRandomPiece(); //TODO Delete
             break;
 
         case SDLK_SPACE:
