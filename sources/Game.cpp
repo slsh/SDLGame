@@ -3,8 +3,6 @@
 //
 
 #include "../headers/Game.h"
-#include "../headers/GraphicManager.h"
-
 std::vector<std::vector<int>> currentLevel(24, std::vector<int>(12,0)); //TODO Move back to private
 
 Game::Game() {

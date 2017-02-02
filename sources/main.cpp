@@ -43,6 +43,7 @@ int main(int argc, char* argv[]) {
             resetTime = SDL_GetTicks();
             g_game->movePiece(g_game->DOWN);
         }
+        //g_game->updateLogic();
         g_game->updateWindow();
     }
     g_game->close();

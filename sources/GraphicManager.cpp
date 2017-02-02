@@ -3,6 +3,7 @@
 //
 
 #include "../headers/GraphicManager.h"
+#include <SDL_ttf.h>
 
 GraphicManager::GraphicManager(){
     SDL_Init(SDL_INIT_VIDEO);              // Initialize SDL2
@@ -26,6 +27,9 @@ GraphicManager::GraphicManager(){
     }
 };
 
+void GraphicManager::init(){
+
+}
 
 
 
@@ -53,15 +57,33 @@ void GraphicManager::drawBackground(int color, int x, int y, int width, int heig
     SDL_FillRect(screenSurface, &dstrect, color);
 }
 
-void GraphicManager::drawText(int color, int x, int y, int width, int height){
-    SDL_Rect dstrect;
-    dstrect.x = x;
-    dstrect.y = y;
-    dstrect.w = width;
-    dstrect.h = height;
+void GraphicManager::drawText(std::string str, int color, int x, int y, int width, int height){
+    SDL_Renderer *renderer = NULL;
+    TTF_Font* Sans = TTF_OpenFont("../images/lazy.ttf", 24); //this opens a font style and sets a size
+
+    SDL_Color White = {255, 255, 255};  // this is the color in rgb format, maxing out all would give you the color white, and it will be your text's color
+
+    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Sans, "put your text here", White); // as TTF_RenderText_Solid could only be used on SDL_Surface then you have to create the surface first
+
+    SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage); //now you can convert it into a texture
+
+    SDL_Rect Message_rect; //create a rect
+    Message_rect.x = 0;  //controls the rect's x coordinate
+    Message_rect.y = 0; // controls the rect's y coordinte
+    Message_rect.w = 100; // controls the width of the rect
+    Message_rect.h = 100; // controls the height of the rect
+    //Mind you that (0,0) is on the top left of the window/screen, think a rect as the text's box, that way it would be very simple to understance
+    //Now since it's a texture, you have to put RenderCopy in your game loop area, the area where the whole code executes
+    SDL_RenderCopy(renderer, Message, NULL, &Message_rect);
+
+    //SDL_Rect dstrect;
+    //dstrect.x = x;
+    //dstrect.y = y;
+    //dstrect.w = width;
+    //dstrect.h = height;
 
     //Load splash image
-    SDL_FillRect(screenSurface, &dstrect, color);
+    //SDL_FillRect(screenSurface, &dstrect, color);
 }
 
 
@@ -139,7 +161,6 @@ void GraphicManager::updateBackground(std::vector< std::vector<int> > inputLevel
             }
         }
     }
-
 }
 
 void GraphicManager::close()
@@ -165,7 +186,7 @@ void GraphicManager::updateWindow(Piece* p, Piece* np, std::vector<std::vector <
     drawBackground(BLACK, 0, 0, SCREENW / 2, SCREENH);
     drawBackground(BLACK, 194, 0, SCREENW / 2, SCREENH);
     drawBackground(GREY_LIGHT, 192, 0, 2, SCREENH); //TODO change to white line
-    drawText(GREY_LIGHT, 192, 0, 2, SCREENH);
+    drawText("Next Piece", GREY_LIGHT, 192, 0, 2, SCREENH);
 
     updatePieces(p);                //Update the falling piece
     updatePieces(np);               //Update the next piece
