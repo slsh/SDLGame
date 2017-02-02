@@ -11,6 +11,8 @@ Game::Game() {
     //Create window/gfx object
     graphicManager = new GraphicManager();
     gameRunning = true;
+    score = 0;
+    highscore = 0;
 }
 
 void Game::init(){
@@ -20,8 +22,11 @@ void Game::init(){
     p->setY(0);
     p->setX(4);
     np = pieceFactory->getRandomPiece();
+    if (score > highscore) {
+        highscore = score;
+    }
+    score = 0;
 }
-
 
 void Game::updateWindow(){
     graphicManager->updateWindow(p, np,currentLevel);
@@ -31,66 +36,33 @@ void Game::close(){
     graphicManager->close();
 }
 
-//Delete rows using 2 vectors for "flash effect"
-void Game::deleteRows(std::vector<int> lineNumbers){
-    //Locate the rows to be deleted, move them to array toDelete
-    std::vector< std::vector<int> > toDelete(24, std::vector<int>(12,0));
-    std::copy(currentLevel.begin(), currentLevel.end(), toDelete.begin()); //Copy current level-state
+void Game::deleteCompleteRows() {
+    const std::vector<int> emptyRow(12, 0);
+    int scoreMultiplier = 1;
+    int deletedRows = 0;
 
-    for (int i = 0; i < 4; i++){
-        if (lineNumbers[i] > 0){
-            for (int j = 0; j < LEVELCOL; j++){
-                toDelete[lineNumbers[i]][j] = 9;
-            }
+    for (unsigned int rowNumber = 0; rowNumber < currentLevel.size(); rowNumber++) {
+        if (isVectorFilled(currentLevel.at(rowNumber))) {
+            currentLevel.erase(currentLevel.begin() + rowNumber);
+            currentLevel.insert(currentLevel.begin(), emptyRow);
+            deletedRows++;
+            scoreMultiplier *= MULTIPLIER_FACTOR;
         }
     }
 
-    //Actual removal in the new array
-    for (int i = LEVELROW -1; i > 0; i--){
-        if (toDelete[i][0] == 9){
-            for (int j = i; j > 0; j--){
-                for (int k = 0; k < LEVELCOL; k++){
-                    toDelete[j][k] = toDelete[j - 1][k];
-                }
-            }
-            //Move back one step on delete as lines changes
-            i++;
-        }
+    if (deletedRows > 0) {
+        score += ROW_POINTS * scoreMultiplier;
+        std::cout << "Score: " << score << std::endl;
     }
-    std::copy(toDelete.begin(), toDelete.end(), currentLevel.begin()); //Copy the new vector back to current level state
 }
 
-/*
- * Check for complete rows - store in std::vector lineNumbers and call deleteRows
- */
-void Game::checkRows(){
-    std::vector<int> lineNumbers(5, -1);
-    bool completeRow;
-    bool aRowIsFilled = false;
-    int j, filledRow = 0;
-    for (int i = 0; i < Game::LEVELROW; i++){
-        completeRow = true;
-        j = 0;
-        while (completeRow){
-            if (currentLevel[i][j] == 0){
-                completeRow = false;
-            } else{
-                j++;
-            }
-            if (j == Game::LEVELCOL){
-                break;
-            }
-        }
-        //Saved fill rows, max 4 as "floating rows" are allowed
-        if (completeRow){
-            lineNumbers[filledRow] = i;
-            filledRow++;
-            aRowIsFilled = true;
+bool Game::isVectorFilled(std::vector<int> v) {
+    for (int val : v) {
+        if (val == 0) {
+            return false;
         }
     }
-    if (aRowIsFilled){
-        deleteRows(lineNumbers); //Pass any filled rows to delete function
-    }
+    return true;
 }
 
 void Game::movePiece(Game::Direction direction){
@@ -105,7 +77,7 @@ void Game::movePiece(Game::Direction direction){
                 p->setY(p->getX() + 1);
             }else{
                 combineVectors();
-                checkRows();
+                deleteCompleteRows();
                 //Switch p and np after rows are checked
                 delete p;
                 p = np;

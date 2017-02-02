@@ -13,7 +13,8 @@
 
 #include "pieces/factories/PieceFactory.h"
 #include "pieces/factories/StandardPieceFactory.h"
-
+#include "pieces/factories/EasyPieceFactory.h"
+#include "Colors.h"
 
 class Game {
 public:
@@ -50,9 +51,13 @@ private:
 
     void combineVectors();
     bool isMovementAllowed(Direction direction);
-    void checkRows();
-    void deleteRows(std::vector<int> lineNumbers);
+    void deleteCompleteRows();
+    bool isVectorFilled(std::vector<int> v);
 
+    unsigned long long score;
+    unsigned long long highscore;
+    const int ROW_POINTS = 100;
+    const int MULTIPLIER_FACTOR = 3;
 };
 
 #endif //SDLGAME_GAME_H

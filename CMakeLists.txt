@@ -20,7 +20,8 @@ set(SOURCE_FILES
         sources/pieces/TPiece.cpp
         sources/pieces/ZPiece.cpp
         sources/pieces/factories/StandardPieceFactory.cpp
-        sources/GraphicManager.cpp)
+        sources/GraphicManager.cpp
+        sources/pieces/factories/EasyPieceFactory.cpp)
 
 set(HEADER_FILES
         headers/Debugger.h
@@ -36,6 +37,7 @@ set(HEADER_FILES
         headers/pieces/TPiece.h
         headers/pieces/ZPiece.h
         headers/pieces/factories/StandardPieceFactory.h
+        headers/pieces/factories/EasyPieceFactory.h
         headers/Colors.h
         headers/GraphicManager.h)
 
