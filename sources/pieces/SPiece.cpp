@@ -35,7 +35,6 @@ SPiece::SPiece() {
                             { 0, 0, 0, 0 }
                     }
             };
-    randomizeRotation();
 }
 
 SPiece::~SPiece() {}

@@ -35,7 +35,6 @@ InvertedLPiece::InvertedLPiece() {
                             {0, 0, 0, 7}
                     }
             };
-    randomizeRotation();
 }
 
 InvertedLPiece::~InvertedLPiece() {}

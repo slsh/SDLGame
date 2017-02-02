@@ -35,7 +35,6 @@ IPiece::IPiece() {
                             { 0, 0, 0, 0 }
                     }
             };
-    randomizeRotation();
 }
 
 IPiece::~IPiece() {}

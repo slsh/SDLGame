@@ -32,7 +32,6 @@ TPiece::TPiece() {
                 { 0, 0, 0, 0 }
             }
         };
-    randomizeRotation();
 }
 
 TPiece::~TPiece() {}

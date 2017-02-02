@@ -20,7 +20,6 @@ ZPiece::ZPiece() {
                             { 0, 0, 0, 0 }
                     }
             };
-    randomizeRotation();
 }
 
 ZPiece::~ZPiece() {}

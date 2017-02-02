@@ -35,7 +35,6 @@ LPiece::LPiece() {
                             { 0, 0, 0, 0 }
                     }
             };
-    randomizeRotation();
 }
 
 LPiece::~LPiece() {}

@@ -51,7 +51,8 @@ public:
 
     // TODO This is for testing
     PieceFactory* pieceFactory = new StandardPieceFactory();
-    Piece* p = pieceFactory->getRandomPiece();
+    Piece* p;
+    Piece* np;// = pieceFactory->getRandomPiece();
     //std::vector<std::vector<int>> level(24, std::vector<int>(12,0));
     //std::vector<std::vector<int>> currentLevel(24, std::vector<int>(12,0));
 

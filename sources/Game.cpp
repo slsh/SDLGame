@@ -11,6 +11,11 @@ Game::Game() { }
 void Game::init(){
     Game::screenSetup();
     gameRunning = true;
+    p = pieceFactory->getRandomPiece();
+    p->randomizeRotation();
+    p->setX(4);
+    p->setY(0);
+    np = pieceFactory->getRandomPiece();
 }
 
 //Delete rows
@@ -89,7 +94,11 @@ void Game::movePiece(Game::Direction direction){
                 combineVectors();
                 checkRows();
                 delete p;
-                p = pieceFactory->getRandomPiece();
+                p = np;
+                p->randomizeRotation();
+                p->setX(0);
+                p->setY(4);
+                np = pieceFactory->getRandomPiece();
             }
             break;
         case LEFT:
@@ -190,7 +199,11 @@ void Game::updateKey(SDL_KeyboardEvent *key){
 
         case SDLK_ESCAPE:
             delete p;
-            p = pieceFactory->getRandomPiece();
+            p = np;
+            p->randomizeRotation();
+            p->setX(0);
+            p->setY(4);
+            np = pieceFactory->getRandomPiece();
             break;
 
         case SDLK_SPACE:
@@ -209,6 +222,7 @@ void Game::updateWindow(){
     DrawBackground(255, 192, 0, SCREENW/2, SCREENH); //TODO change to white line
 
     updatePieces(p);                //Update the falling piece
+    updatePieces(np);               //Update the next piece
     updateBackground(currentLevel); //Update the LEVEL background
 
     //Apply the image

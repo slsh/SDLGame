@@ -35,7 +35,6 @@ SquarePiece::SquarePiece() {
                             { 0, 0, 0, 0 }
                     }
             };
-    randomizeRotation();
 }
 
 SquarePiece::~SquarePiece() {}
