@@ -30,8 +30,8 @@ public:
 
     int getX();
     int getY();
-    void setX(int x);
-    void setY(int y);
+    void setY(int x);
+    void setX(int y);
 
     void printPiece();
 

@@ -17,8 +17,8 @@ void Game::init(){
     //Create initial two pieces
     p = pieceFactory->getRandomPiece();
     p->randomizeRotation();
-    p->setX(0);
-    p->setY(4);
+    p->setY(0);
+    p->setX(4);
     np = pieceFactory->getRandomPiece();
 }
 
@@ -97,12 +97,12 @@ void Game::movePiece(Game::Direction direction){
     switch (direction){
         case UP:
             if(isMovementAllowed(UP)) {
-                p->setX(p->getX() + -1);
+                p->setY(p->getX() + -1);
             }
             break;
         case DOWN:
             if(isMovementAllowed(DOWN)) {
-                p->setX(p->getX() + 1);
+                p->setY(p->getX() + 1);
             }else{
                 combineVectors();
                 checkRows();
@@ -110,19 +110,19 @@ void Game::movePiece(Game::Direction direction){
                 delete p;
                 p = np;
                 p->randomizeRotation();
-                p->setX(0);
-                p->setY(4);
+                p->setY(0);
+                p->setX(4);
                 np = pieceFactory->getRandomPiece();
             }
             break;
         case LEFT:
             if(isMovementAllowed(LEFT)) {
-                p->setY(p->getY() + -1);
+                p->setX(p->getY() + -1);
             }
             break;
         case RIGHT:
             if(isMovementAllowed(RIGHT)) {
-                p->setY(p->getY() + 1);
+                p->setX(p->getY() + 1);
             }
             break;
         default:
@@ -211,8 +211,8 @@ void Game::updateKey(SDL_KeyboardEvent *key){
             delete p; //TODO Delete
             p = np; //TODO Delete
             p->randomizeRotation(); //TODO Delete
-            p->setX(0); //TODO Delete
-            p->setY(4); //TODO Delete
+            p->setY(0); //TODO Delete
+            p->setX(4); //TODO Delete
             np = pieceFactory->getRandomPiece(); //TODO Delete
             break;
 

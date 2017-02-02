@@ -23,10 +23,10 @@ int Piece::getY() {
     return yPosition;
 }
 
-void Piece::setX(int x) {
+void Piece::setY(int x) {
     xPosition = x;
 }
-void Piece::setY(int y) {
+void Piece::setX(int y) {
     yPosition = y;
 }
 
