@@ -8,12 +8,12 @@
 #include <SDL2/SDL.h>
 
 #include <iostream>
-#include "../headers/timer.h"
-#include "../headers/Debugger.h"
-#include "../headers/pieces/TPiece.h"
-#include "../headers/pieces/factories/PieceFactory.h"
-#include "../headers/pieces/factories/StandardPieceFactory.h"
-
+#include "timer.h"
+#include "Debugger.h"
+#include "pieces/TPiece.h"
+#include "pieces/factories/PieceFactory.h"
+#include "pieces/factories/StandardPieceFactory.h"
+#include "Colors.h"
 
 class Game {
 public:

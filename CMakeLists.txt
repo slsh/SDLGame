@@ -33,6 +33,6 @@ set(HEADER_FILES
         headers/pieces/SquarePiece.h
         headers/pieces/TPiece.h
         headers/pieces/ZPiece.h
-        headers/pieces/factories/StandardPieceFactory.h)
+        headers/pieces/factories/StandardPieceFactory.h headers/Colors.h)
 add_executable(SDLGame ${SOURCE_FILES} ${HEADER_FILES})
 
