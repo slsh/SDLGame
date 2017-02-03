@@ -5,6 +5,7 @@
 #include "../headers/GraphicManager.h"
 
 GraphicManager::GraphicManager(){
+    TTF_Init();
     SDL_Init(SDL_INIT_VIDEO);              // Initialize SDL2
 
     // Create an application window with the following settings:
@@ -26,6 +27,9 @@ GraphicManager::GraphicManager(){
     }
 };
 
+void GraphicManager::init(){
+
+}
 
 
 
@@ -53,15 +57,20 @@ void GraphicManager::drawBackground(int color, int x, int y, int width, int heig
     SDL_FillRect(screenSurface, &dstrect, color);
 }
 
-void GraphicManager::drawText(int color, int x, int y, int width, int height){
-    SDL_Rect dstrect;
-    dstrect.x = x;
-    dstrect.y = y;
-    dstrect.w = width;
-    dstrect.h = height;
+void GraphicManager::drawText(std::string str, int color, int x, int y, int width, int height){
 
-    //Load splash image
-    SDL_FillRect(screenSurface, &dstrect, color);
+    TTF_Font *fntCourier = TTF_OpenFont( "../images/Game-Over.ttf", 48 );
+
+    SDL_Color clrFg = {255,255,255,0};  // Blue ("Fg" is foreground)
+
+    SDL_Surface *sText = TTF_RenderText_Solid( fntCourier, str.c_str() , clrFg );
+
+    SDL_Rect rcDest = {0,0,0,0};
+
+    SDL_BlitSurface( sText,NULL, screenSurface,&rcDest );
+
+    SDL_FreeSurface( sText );
+    TTF_CloseFont( fntCourier );
 }
 
 
@@ -139,7 +148,6 @@ void GraphicManager::updateBackground(std::vector< std::vector<int> > inputLevel
             }
         }
     }
-
 }
 
 void GraphicManager::close()
@@ -165,7 +173,7 @@ void GraphicManager::updateWindow(Piece* p, Piece* np, std::vector<std::vector <
     drawBackground(BLACK, 0, 0, SCREENW / 2, SCREENH);
     drawBackground(BLACK, 194, 0, SCREENW / 2, SCREENH);
     drawBackground(GREY_LIGHT, 192, 0, 2, SCREENH); //TODO change to white line
-    drawText(GREY_LIGHT, 192, 0, 2, SCREENH);
+    //
 
     updatePieces(p);                //Update the falling piece
     updatePieces(np);               //Update the next piece
