@@ -6,7 +6,6 @@
 #define SDLGAME_GRAPHICMANAGER_H
 #include <SDL2/SDL.h>
 #include <SDL_ttf.h>
-
 #include "Colors.h"
 #include "pieces/factories/PieceFactory.h"
 

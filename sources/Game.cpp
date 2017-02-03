@@ -3,6 +3,7 @@
 //
 
 #include "../headers/Game.h"
+
 std::vector<std::vector<int>> currentLevel(24, std::vector<int>(12,0)); //TODO Move back to private
 
 Game::Game() {
@@ -60,6 +61,7 @@ void Game::updateWindow(){
 
 void Game::close(){
     graphicManager->close();
+    gameRunning = false;
 }
 
 void Game::deleteCompleteRows() {

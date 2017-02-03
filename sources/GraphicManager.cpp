@@ -65,7 +65,7 @@ void GraphicManager::drawText(std::string str, int color, int x, int y, int widt
 
     SDL_Surface *sText = TTF_RenderText_Solid( fntCourier, str.c_str() , clrFg );
 
-    SDL_Rect rcDest = {0,0,0,0};
+    SDL_Rect rcDest = {x,y,0,0};
 
     SDL_BlitSurface( sText,NULL, screenSurface,&rcDest );
 
@@ -173,7 +173,7 @@ void GraphicManager::updateWindow(Piece* p, Piece* np, std::vector<std::vector <
     drawBackground(BLACK, 0, 0, SCREENW / 2, SCREENH);
     drawBackground(BLACK, 194, 0, SCREENW / 2, SCREENH);
     drawBackground(GREY_LIGHT, 192, 0, 2, SCREENH); //TODO change to white line
-    //
+    drawText("NextPiece", GREY_LIGHT, 240, 100, 2, SCREENH);
 
     updatePieces(p);                //Update the falling piece
     updatePieces(np);               //Update the next piece

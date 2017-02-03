@@ -33,11 +33,9 @@ int main(int argc, char* argv[]) {
             } else if (e.type == SDL_KEYDOWN) {
                 //SDL_FillRect(screenSurface, NULL, 0);
                 g_game-> updateKey(&e.key);
-
             }
         }
         startTime = SDL_GetTicks();
-
 
         if ((startTime - resetTime) > 1000 / g_game->getScore()){
             resetTime = SDL_GetTicks();
@@ -46,5 +44,5 @@ int main(int argc, char* argv[]) {
         //g_game->updateLogic();
         g_game->updateWindow();
     }
-    g_game->close();
+    delete g_game;
     return 0; }
