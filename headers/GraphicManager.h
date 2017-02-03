@@ -11,7 +11,7 @@
 #if defined(__APPLE__)
 #include <SDL_ttf.h>
 #elif defined(__UNIX__)
-#include <SDL2/SDL_ttf>
+#include <SDL2/SDL_ttf.h>
 #endif
 
 
@@ -27,6 +27,7 @@ public:
 
     void updateBackground(std::vector< std::vector<int> > inputLevel);
     void updatePieces(Piece* p);
+    void paintBackground();
 
     void drawBitmap(char *filename, int x, int y, int width, int height);
     void drawBackground(int color, int x, int y, int width, int height);

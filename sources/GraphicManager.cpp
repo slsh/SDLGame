@@ -61,7 +61,7 @@ void GraphicManager::drawText(std::string str, int color, int x, int y, int widt
 
     TTF_Font *fntCourier = TTF_OpenFont( "../images/Game-Over.ttf", 48 );
 
-    SDL_Color clrFg = {255,255,255,0};  // Blue ("Fg" is foreground)
+    SDL_Color clrFg = {255,255,255,0};
 
     SDL_Surface *sText = TTF_RenderText_Solid( fntCourier, str.c_str() , clrFg );
 
@@ -167,13 +167,17 @@ void GraphicManager::close()
     SDL_Quit();
 }
 
-
-void GraphicManager::updateWindow(Piece* p, Piece* np, std::vector<std::vector <int>> currentLevel){
+void GraphicManager::paintBackground(){
     //Repaint the two backgrounds
     drawBackground(BLACK, 0, 0, SCREENW / 2, SCREENH);
     drawBackground(BLACK, 194, 0, SCREENW / 2, SCREENH);
-    drawBackground(GREY_LIGHT, 192, 0, 2, SCREENH); //TODO change to white line
-    drawText("NextPiece", GREY_LIGHT, 240, 100, 2, SCREENH);
+    drawBackground(GREY_LIGHT, 192, 0, 2, SCREENH);
+
+}
+void GraphicManager::updateWindow(Piece* p, Piece* np, std::vector<std::vector <int>> currentLevel){
+
+    drawText("Next Piece", WHITE, 240, 100, 2, SCREENH);
+
 
     updatePieces(p);                //Update the falling piece
     updatePieces(np);               //Update the next piece
