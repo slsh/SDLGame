@@ -5,9 +5,15 @@
 #ifndef SDLGAME_GRAPHICMANAGER_H
 #define SDLGAME_GRAPHICMANAGER_H
 #include <SDL2/SDL.h>
-#include <SDL_ttf.h>
 #include "Colors.h"
 #include "pieces/factories/PieceFactory.h"
+
+#if defined(__APPLE__)
+#include <SDL_ttf.h>
+#elif defined(__UNIX__)
+#include <SDL2/SDL_ttf>
+#endif
+
 
 
 class GraphicManager {
