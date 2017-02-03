@@ -5,6 +5,7 @@
 #ifndef SDLGAME_GRAPHICMANAGER_H
 #define SDLGAME_GRAPHICMANAGER_H
 #include <SDL2/SDL.h>
+#include <SDL_ttf.h>
 
 #include "Colors.h"
 #include "pieces/factories/PieceFactory.h"
@@ -13,7 +14,7 @@
 class GraphicManager {
 public:
     GraphicManager();
-    ~GraphicManager() {close();}
+    ~GraphicManager() {close(); TTF_Quit();}
     void close();
     void updateWindow(Piece* p, Piece* np, std::vector<std::vector <int>> currentLevel);
 
