@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
         }
         startTime = SDL_GetTicks();
 
-        if ((startTime - resetTime) > 1000 / g_game->getScore()){
+        if (((startTime - resetTime) > 1000 / g_game->getScore()) & !g_game->isPaused()){
             resetTime = SDL_GetTicks();
             g_game->movePiece(g_game->DOWN);
         }
