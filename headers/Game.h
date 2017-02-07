@@ -22,7 +22,8 @@ public:
         UP,
         DOWN,
         LEFT,
-        RIGHT
+        RIGHT,
+        ROTATE
     };
 
     Game();

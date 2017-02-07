@@ -180,6 +180,15 @@ bool Game::isMovementAllowed(Direction direction){
                             return false;
                         }
                         break;
+                    case ROTATE:
+                        //Check for other pieces and Limit
+                        if ((currentLevel[i + p->getX()][j + p->getY()] > 0) ||
+                            (j + p->getY() - 1 < 0) ||
+                            (j + p->getY() + 1 > 11)
+                                ){
+                            return false;
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -223,7 +232,10 @@ void Game::updateKey(SDL_KeyboardEvent *key){
                 break;
             case SDLK_SPACE:
                 //p->rotateLeft();
-                p->rotateRight();
+                if(isMovementAllowed(ROTATE)) {
+                    p->rotateRight();
+                    SDL_Delay(30);
+                }
                 break;
             default:
                 break;
