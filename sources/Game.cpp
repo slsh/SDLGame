@@ -56,7 +56,9 @@ unsigned long long Game::getScore(){
 }
 
 void Game::updateWindow(){
-    graphicManager->updateWindow(p, np,currentLevel);
+    graphicManager->paintBackground();
+    graphicManager->drawText("Score: " + std::to_string(score), GREY_LIGHT, 240, 120, 0, 0);
+    graphicManager->updateWindow(p, np, currentLevel);
 }
 
 void Game::close(){

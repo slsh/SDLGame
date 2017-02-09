@@ -10,7 +10,7 @@
 
 #if defined(__APPLE__)
 #include <SDL_ttf.h>
-#elif defined(__UNIX__)
+#elif defined(__linux__)
 #include <SDL2/SDL_ttf.h>
 #endif
 
