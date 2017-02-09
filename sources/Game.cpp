@@ -7,12 +7,14 @@
 Game::Game() {
     gameRunning = true;
     pauseCheck = false;
+    gameOver = false;
     score = 0;
     highscore = 0;
-    blankLevel(currentLevel, LEVELCOL, LEVELROW);
+
 }
 
 void Game::blankLevel(std::vector<std::vector<int>> &level, unsigned const int width, unsigned const int height) {
+    level.clear();
     for (int heightIndex = 0; heightIndex < height; heightIndex++) {
         std::vector<int> w(width, 0);
         level.push_back(w);
@@ -20,6 +22,8 @@ void Game::blankLevel(std::vector<std::vector<int>> &level, unsigned const int w
 }
 
 void Game::init(){
+    blankLevel(currentLevel, LEVELCOL, LEVELROW);
+
     //Create initial two pieces
     p = pieceFactory->getRandomPiece();
     p->randomizeRotation();
@@ -30,6 +34,7 @@ void Game::init(){
         highscore = score;
     }
     score = 0;
+    gameOver = false;
 }
 
 // Basic tracker of automatic speed
@@ -62,6 +67,10 @@ short Game::getSpeed(){
 
 unsigned long long Game::getScore() {
     return score;
+}
+
+unsigned long long Game::getHighScore() {
+    return highscore;
 }
 
 void Game::close(){
@@ -116,6 +125,9 @@ void Game::movePiece(Game::Direction direction){
                 p->setY(0);
                 p->setX(4);
                 np = pieceFactory->getRandomPiece();
+                if(!isMovementAllowed(DOWN)){
+                    gameOver = true;
+                }
             }
             break;
         case LEFT:
@@ -217,7 +229,15 @@ bool Game::isRotationAllowed(Direction direction){
 }
 
 void Game::updateKey(SDL_KeyboardEvent *key){
-    if(!isPaused()){
+    if(isGameOver()){
+        switch( key->keysym.sym ) {
+            case SDLK_RETURN:
+                init();
+                break;
+            default:
+                break;
+        }
+    }else if(!isPaused()){
         switch( key->keysym.sym ) {
             case SDLK_UP:
                 movePiece(UP);

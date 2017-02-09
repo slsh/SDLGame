@@ -196,8 +196,12 @@ void GraphicManager::paintBackground(){
 void GraphicManager::updateWindow(){
     paintBackground();
 
-    drawText("Next Piece", SMALL, 240, 100);
-    drawText("Score: " + std::to_string(game->getScore()), SMALL, 240, 120);
+    drawText("Next Piece", SMALL, 240, 0);
+    drawText("Score:", SMALL, 240, 120);
+    drawText(std::to_string(game->getScore()), SMALL, 240, 140);
+
+    drawText("HighScore:", SMALL, 240, 160);
+    drawText(std::to_string(game->getHighScore()), SMALL, 240, 180);
 
     updatePieces(game->getCurrentPiece());            //Update the falling piece
     updatePieces(game->getNextPiece());               //Update the next piece

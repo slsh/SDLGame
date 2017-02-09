@@ -37,6 +37,9 @@ public:
     // a function to access the private running variable
     bool isRunning() { return gameRunning; }
     bool isPaused() { return pauseCheck; }
+    bool isGameOver() {return gameOver; }
+
+    unsigned long long getHighScore();
     unsigned long long getScore();
     short getSpeed();
     std::vector<std::vector<int>> currentLevel;
@@ -49,6 +52,7 @@ private:
     unsigned const int LEVELCOL = 12;
     bool gameRunning;
     bool pauseCheck;
+    bool gameOver;
 
     PieceFactory* pieceFactory = new StandardPieceFactory();
     Piece* p;

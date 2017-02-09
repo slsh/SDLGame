@@ -40,12 +40,15 @@ int main(int argc, char* argv[]) {
                 game-> updateKey(&e.key);
             }
         }
-        startTime = SDL_GetTicks();
+        if(!game->isGameOver()){
+            startTime = SDL_GetTicks();
 
-        if (((startTime - resetTime) > 1000 / game->getSpeed()) & !game->isPaused()){
-            resetTime = SDL_GetTicks();
-            game->movePiece(game->DOWN);
+            if (((startTime - resetTime) > 1000 / game->getSpeed()) & !game->isPaused()){
+                resetTime = SDL_GetTicks();
+                game->movePiece(game->DOWN);
+            }
         }
+
         graphicManager->updateWindow();
     }
     delete game;
