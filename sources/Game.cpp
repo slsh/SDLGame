@@ -10,6 +10,7 @@ Game::Game() {
     //Create window/gfx object
     graphicManager = new GraphicManager();
     gameRunning = true;
+    pauseCheck = false;
     score = 0;
     highscore = 0;
 }
@@ -181,6 +182,15 @@ bool Game::isMovementAllowed(Direction direction){
                             return false;
                         }
                         break;
+                    case ROTATE:
+                        //Check for other pieces and Limit
+                        if ((currentLevel[i + p->getX()][j + p->getY()] > 0) ||
+                            (j + p->getY() - 1 < 0) ||
+                            (j + p->getY() + 1 > 11)
+                                ){
+                            return false;
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -192,38 +202,53 @@ bool Game::isMovementAllowed(Direction direction){
 
 
 void Game::updateKey(SDL_KeyboardEvent *key){
-    switch( key->keysym.sym ){
-        case SDLK_UP:
-            movePiece(UP);
-            break;
+    if(!isPaused()){
+        switch( key->keysym.sym ) {
+            case SDLK_UP:
+                movePiece(UP);
+                break;
 
-        case SDLK_DOWN:
-            movePiece(DOWN);
-            break;
+            case SDLK_DOWN:
+                movePiece(DOWN);
+                break;
 
-        case SDLK_LEFT:
-            movePiece(LEFT);
-            break;
+            case SDLK_LEFT:
+                movePiece(LEFT);
+                break;
 
-        case SDLK_RIGHT:
-            movePiece(RIGHT);
-            break;
+            case SDLK_RIGHT:
+                movePiece(RIGHT);
+                break;
 
-        case SDLK_ESCAPE:
-            delete p; //TODO Delete
-            p = np; //TODO Delete
-            p->randomizeRotation(); //TODO Delete
-            p->setY(0); //TODO Delete
-            p->setX(4); //TODO Delete
-            np = pieceFactory->getRandomPiece(); //TODO Delete
-            break;
+            case SDLK_ESCAPE:
+                pauseCheck = !isPaused() ? true : false;
+                break;
 
-        case SDLK_SPACE:
-            //p->rotateLeft();
-            p->rotateRight();
-            break;
-
-        default:
-            break;
+            case SDLK_RETURN:
+                delete p; //TODO Delete
+                p = np; //TODO Delete
+                p->randomizeRotation(); //TODO Delete
+                p->setY(0); //TODO Delete
+                p->setX(4); //TODO Delete
+                np = pieceFactory->getRandomPiece(); //TODO Delete
+                break;
+            case SDLK_SPACE:
+                //p->rotateLeft();
+                if(isMovementAllowed(ROTATE)) {
+                    p->rotateRight();
+                    SDL_Delay(30);
+                }
+                break;
+            default:
+                break;
+        }
+    }else{
+        switch( key->keysym.sym ) {
+            case SDLK_ESCAPE:
+                pauseCheck = !isPaused() ? true : false;
+                break;
+            default:
+                break;
+        }
     }
 }
