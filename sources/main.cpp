@@ -40,10 +40,11 @@ int main(int argc, char* argv[]) {
                 game-> updateKey(&e.key);
             }
         }
-        if(!game->isGameOver()){
+
+        if(!game->isPaused() && !game->isGameOver()){
             startTime = SDL_GetTicks();
 
-            if (((startTime - resetTime) > 1000 / game->getSpeed()) & !game->isPaused()){
+            if ((startTime - resetTime) > 1000 / game->getSpeed()){
                 resetTime = SDL_GetTicks();
                 game->movePiece(game->DOWN);
             }
