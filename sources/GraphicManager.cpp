@@ -175,9 +175,7 @@ void GraphicManager::paintBackground(){
 
 }
 void GraphicManager::updateWindow(Piece* p, Piece* np, std::vector<std::vector <int>> currentLevel){
-    paintBackground();
     drawText("Next Piece", WHITE, 240, 100, 2, SCREENH);
-
 
     updatePieces(p);                //Update the falling piece
     updatePieces(np);               //Update the next piece
