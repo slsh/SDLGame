@@ -4,18 +4,26 @@
 
 #include "../headers/Game.h"
 
-std::vector<std::vector<int>> currentLevel(24, std::vector<int>(12,0)); //TODO Move back to private
-
 Game::Game() {
-    //Create window/gfx object
-    graphicManager = new GraphicManager();
     gameRunning = true;
     pauseCheck = false;
+    gameOver = false;
     score = 0;
     highscore = 0;
+
+}
+
+void Game::blankLevel(std::vector<std::vector<int>> &level, unsigned const int width, unsigned const int height) {
+    level.clear();
+    for (int heightIndex = 0; heightIndex < height; heightIndex++) {
+        std::vector<int> w(width, 0);
+        level.push_back(w);
+    }
 }
 
 void Game::init(){
+    blankLevel(currentLevel, LEVELCOL, LEVELROW);
+
     //Create initial two pieces
     p = pieceFactory->getRandomPiece();
     p->randomizeRotation();
@@ -26,10 +34,11 @@ void Game::init(){
         highscore = score;
     }
     score = 0;
+    gameOver = false;
 }
 
 // Basic tracker of automatic speed
-unsigned long long Game::getScore(){
+short Game::getSpeed(){
     if (score < 15000){
         return 2;
     } else if (score < 30000){
@@ -56,14 +65,15 @@ unsigned long long Game::getScore(){
     return 2;
 }
 
-void Game::updateWindow(){
-    graphicManager->paintBackground();
-    graphicManager->drawText("Score: " + std::to_string(score), graphicManager->SMALL, 240, 120);
-    graphicManager->updateWindow(p, np, currentLevel);
+unsigned long long Game::getScore() {
+    return score;
+}
+
+unsigned long long Game::getHighScore() {
+    return highscore;
 }
 
 void Game::close(){
-    graphicManager->close();
     gameRunning = false;
 }
 
@@ -83,7 +93,6 @@ void Game::deleteCompleteRows() {
 
     if (deletedRows > 0) {
         score += ROW_POINTS * scoreMultiplier;
-        std::cout << "Score: " << score << std::endl;
     }
 }
 
@@ -116,6 +125,9 @@ void Game::movePiece(Game::Direction direction){
                 p->setY(0);
                 p->setX(4);
                 np = pieceFactory->getRandomPiece();
+                if(!isMovementAllowed(DOWN)){
+                    gameOver = true;
+                }
             }
             break;
         case LEFT:
@@ -217,7 +229,15 @@ bool Game::isRotationAllowed(Direction direction){
 }
 
 void Game::updateKey(SDL_KeyboardEvent *key){
-    if(!isPaused()){
+    if(isGameOver()){
+        switch( key->keysym.sym ) {
+            case SDLK_RETURN:
+                init();
+                break;
+            default:
+                break;
+        }
+    }else if(!isPaused()){
         switch( key->keysym.sym ) {
             case SDLK_UP:
                 movePiece(UP);
@@ -236,7 +256,7 @@ void Game::updateKey(SDL_KeyboardEvent *key){
                 break;
 
             case SDLK_ESCAPE:
-                pauseCheck = !isPaused() ? true : false;
+                pauseCheck = !isPaused();
                 break;
 
             case SDLK_RETURN:
@@ -260,10 +280,18 @@ void Game::updateKey(SDL_KeyboardEvent *key){
     }else{
         switch( key->keysym.sym ) {
             case SDLK_ESCAPE:
-                pauseCheck = !isPaused() ? true : false;
+                pauseCheck = !isPaused();
                 break;
             default:
                 break;
         }
     }
+}
+
+Piece* Game::getCurrentPiece() {
+    return p;
+}
+
+Piece* Game::getNextPiece() {
+    return np;
 }

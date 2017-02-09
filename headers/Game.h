@@ -9,7 +9,6 @@
 #include <iostream>
 #include "timer.h"
 #include "Debugger.h"
-#include "GraphicManager.h"
 
 #include "pieces/factories/PieceFactory.h"
 #include "pieces/factories/StandardPieceFactory.h"
@@ -33,30 +32,38 @@ public:
     void init();
     void updateKey(SDL_KeyboardEvent *key);
     void movePiece(Direction direction);
-    void updateWindow();
+//    void updateWindow();
     void close();
     // a function to access the private running variable
     bool isRunning() { return gameRunning; }
     bool isPaused() { return pauseCheck; }
+    bool isGameOver() {return gameOver; }
+
+    unsigned long long getHighScore();
     unsigned long long getScore();
+    short getSpeed();
+    std::vector<std::vector<int>> currentLevel;
+
+    Piece* getCurrentPiece();
+    Piece* getNextPiece();
 
 private:
-    const int LEVELROW = 24;
-    const int LEVELCOL = 12;
+    unsigned const int LEVELROW = 24;
+    unsigned const int LEVELCOL = 12;
     bool gameRunning;
     bool pauseCheck;
-    GraphicManager* graphicManager;
+    bool gameOver;
 
     PieceFactory* pieceFactory = new StandardPieceFactory();
     Piece* p;
     Piece* np;
-    //Board* currentLevel;
 
     void combineVectors();
     bool isMovementAllowed(Direction direction);
     bool isRotationAllowed(Direction direction);
     void deleteCompleteRows();
     bool isVectorFilled(std::vector<int> v);
+    void blankLevel(std::vector<std::vector<int>> &level, unsigned const int width, unsigned const int height);
 
     unsigned long long score;
     unsigned long long highscore;

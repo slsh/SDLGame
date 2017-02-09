@@ -4,6 +4,7 @@
 
 #include "../headers/GraphicManager.h"
 
+
 GraphicManager::GraphicManager(){
     TTF_Init();
     SDL_Init(SDL_INIT_VIDEO);              // Initialize SDL2
@@ -52,8 +53,8 @@ GraphicManager::~GraphicManager() {
     TTF_Quit();
 }
 
-void GraphicManager::init(){
-
+void GraphicManager::init(Game *newGame){
+    game = newGame;
 }
 
 
@@ -190,15 +191,26 @@ void GraphicManager::paintBackground(){
     drawBackground(BLACK, 0, 0, SCREENW / 2, SCREENH);
     drawBackground(BLACK, 194, 0, SCREENW / 2, SCREENH);
     drawBackground(GREY_LIGHT, 192, 0, 2, SCREENH);
-
 }
-void GraphicManager::updateWindow(Piece* p, Piece* np, std::vector<std::vector <int>> currentLevel){
-    drawText("Next Piece", SMALL, 240, 100);
 
-    updatePieces(p);                //Update the falling piece
-    updatePieces(np);               //Update the next piece
-    updateBackground(currentLevel); //Update the LEVEL background
+void GraphicManager::updateWindow(){
+    paintBackground();
+
+    drawText("Next Piece", SMALL, 240, 0);
+    drawText("Score:", SMALL, 240, 120);
+    drawText(std::to_string(game->getScore()), SMALL, 240, 140);
+
+    drawText("HighScore:", SMALL, 240, 160);
+    drawText(std::to_string(game->getHighScore()), SMALL, 240, 180);
+
+
+    updatePieces(game->getCurrentPiece());            //Update the falling piece
+    updatePieces(game->getNextPiece());               //Update the next piece
+    updateBackground(game->currentLevel); //Update the LEVEL background
+
+    if(game->isGameOver()){drawText("Game Over!", MEDIUM, (384 / 6) , 192);}
+    if(game->isPaused()){drawText("PAUSED", MEDIUM, (384 / 6) , 192);}
 
     //Apply the image
-    SDL_UpdateWindowSurface( window );
+    SDL_UpdateWindowSurface(window);
 }
