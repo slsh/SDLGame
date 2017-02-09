@@ -53,7 +53,7 @@ GraphicManager::~GraphicManager() {
     TTF_Quit();
 }
 
-void GraphicManager::init(Game &newGame){
+void GraphicManager::init(Game *newGame){
     game = newGame;
 }
 
@@ -191,19 +191,18 @@ void GraphicManager::paintBackground(){
     drawBackground(BLACK, 0, 0, SCREENW / 2, SCREENH);
     drawBackground(BLACK, 194, 0, SCREENW / 2, SCREENH);
     drawBackground(GREY_LIGHT, 192, 0, 2, SCREENH);
-
 }
 
 void GraphicManager::updateWindow(){
     paintBackground();
 
     drawText("Next Piece", SMALL, 240, 100);
-    drawText("Score: " + std::to_string(game.getScore()), SMALL, 240, 120);
+    drawText("Score: " + std::to_string(game->getScore()), SMALL, 240, 120);
 
-    updatePieces(game->p);                //Update the falling piece
-    updatePieces(game->np);               //Update the next piece
+    updatePieces(game->getCurrentPiece());            //Update the falling piece
+    updatePieces(game->getNextPiece());               //Update the next piece
     updateBackground(game->currentLevel); //Update the LEVEL background
 
     //Apply the image
-    SDL_UpdateWindowSurface( window );
+    SDL_UpdateWindowSurface(window);
 }

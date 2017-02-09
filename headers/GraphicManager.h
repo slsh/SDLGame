@@ -30,7 +30,7 @@ public:
 
     void close();
     void updateWindow();
-    void init(Game &newGame);
+    void init(Game *newGame);
 
 
 private:
@@ -63,7 +63,7 @@ private:
     TTF_Font *mediumFont = NULL;
     TTF_Font *smallFont = NULL;
 
-    Game game;
+    Game *game;
 };
 
 

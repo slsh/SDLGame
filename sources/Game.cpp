@@ -4,13 +4,19 @@
 
 #include "../headers/Game.h"
 
-std::vector<std::vector<int>> currentLevel(24, std::vector<int>(12,0)); //TODO Move back to private
-
 Game::Game() {
     gameRunning = true;
     pauseCheck = false;
     score = 0;
     highscore = 0;
+    blankLevel(currentLevel, LEVELCOL, LEVELROW);
+}
+
+void Game::blankLevel(std::vector<std::vector<int>> &level, unsigned const int width, unsigned const int height) {
+    for (int heightIndex = 0; heightIndex < height; heightIndex++) {
+        std::vector<int> w(width, 0);
+        level.push_back(w);
+    }
 }
 
 void Game::init(){
@@ -78,7 +84,6 @@ void Game::deleteCompleteRows() {
 
     if (deletedRows > 0) {
         score += ROW_POINTS * scoreMultiplier;
-        std::cout << "Score: " << score << std::endl;
     }
 }
 
@@ -261,4 +266,12 @@ void Game::updateKey(SDL_KeyboardEvent *key){
                 break;
         }
     }
+}
+
+Piece* Game::getCurrentPiece() {
+    return p;
+}
+
+Piece* Game::getNextPiece() {
+    return np;
 }

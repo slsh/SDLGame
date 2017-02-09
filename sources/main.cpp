@@ -17,8 +17,8 @@ int main(int argc, char* argv[]) {
         DEBUG = true;
     }
     //Main loop flag
-    dgb = new Debugger(true);
-    bool quit = false;
+    dgb = new Debugger(DEBUG);
+
     //Create window/gfx object
     game = new Game();
     graphicManager = new GraphicManager();
@@ -37,7 +37,6 @@ int main(int argc, char* argv[]) {
             if (e.type == SDL_QUIT) {
                 game->close();
             } else if (e.type == SDL_KEYDOWN) {
-                //SDL_FillRect(screenSurface, NULL, 0);
                 game-> updateKey(&e.key);
             }
         }
@@ -47,13 +46,9 @@ int main(int argc, char* argv[]) {
             resetTime = SDL_GetTicks();
             game->movePiece(game->DOWN);
         }
-        //game->updateLogic();
         graphicManager->updateWindow();
     }
     delete game;
+    delete graphicManager;
     return 0;
 }
-/*
-
-graphicManager->close();
- */
