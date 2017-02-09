@@ -210,8 +210,8 @@ bool Game::isRotationAllowed(Direction direction){
                     case ROTATE:
                         //Check for other pieces and Limit
                         if ((currentLevel[i + p->getX()][j + p->getY()] > 0) ||
-                            (j + p->getY() - 1 < 0) ||
-                            (j + p->getY() + 1 > 11)
+                            (j + p->getY() < 0) ||
+                            (j + p->getY() > 11)
                                 ){
                             return false;
                         }
