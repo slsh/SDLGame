@@ -54,6 +54,7 @@ private:
 
     void combineVectors();
     bool isMovementAllowed(Direction direction);
+    bool isRotationAllowed(Direction direction);
     void deleteCompleteRows();
     bool isVectorFilled(std::vector<int> v);
 

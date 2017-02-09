@@ -201,6 +201,30 @@ bool Game::isMovementAllowed(Direction direction){
 }
 
 
+bool Game::isRotationAllowed(Direction direction){
+    for (int i = 0; i < 4; ++i){
+        for (int j = 0; j < 4; ++j){
+            if (p->getNextRotation()[i][j] > 0){
+                switch (direction)
+                {
+                    case ROTATE:
+                        //Check for other pieces and Limit
+                        if ((currentLevel[i + p->getX()][j + p->getY()] > 0) ||
+                            (j + p->getY() - 1 < 0) ||
+                            (j + p->getY() + 1 > 11)
+                                ){
+                            return false;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+    return true;
+}
+
 void Game::updateKey(SDL_KeyboardEvent *key){
     if(!isPaused()){
         switch( key->keysym.sym ) {
@@ -234,7 +258,7 @@ void Game::updateKey(SDL_KeyboardEvent *key){
                 break;
             case SDLK_SPACE:
                 //p->rotateLeft();
-                if(isMovementAllowed(ROTATE)) {
+                if(isRotationAllowed(ROTATE)) {
                     p->rotateRight();
                     SDL_Delay(30);
                 }
