@@ -203,9 +203,13 @@ void GraphicManager::updateWindow(){
     drawText("HighScore:", SMALL, 240, 160);
     drawText(std::to_string(game->getHighScore()), SMALL, 240, 180);
 
+
     updatePieces(game->getCurrentPiece());            //Update the falling piece
     updatePieces(game->getNextPiece());               //Update the next piece
     updateBackground(game->currentLevel); //Update the LEVEL background
+
+    if(game->isGameOver()){drawText("Game Over!", MEDIUM, (384 / 6) , 192);}
+    if(game->isPaused()){drawText("PAUSED", MEDIUM, (384 / 6) , 192);}
 
     //Apply the image
     SDL_UpdateWindowSurface(window);
