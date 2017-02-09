@@ -7,6 +7,7 @@
 #include <SDL2/SDL.h>
 #include "Colors.h"
 #include "pieces/factories/PieceFactory.h"
+#include "Game.h"
 
 #if defined(__APPLE__)
 #include <SDL_ttf.h>
@@ -28,19 +29,18 @@ public:
     };
 
     void close();
-    void updateWindow(Piece* p, Piece* np, std::vector<std::vector <int>> currentLevel);
+    void updateWindow();
+    void init(Game &newGame);
 
-    void init();
 
+private:
+    void drawBitmap(char *filename, int x, int y, int width, int height);
+    void drawBackground(int color, int x, int y, int width, int height);
+    void drawText(std::string str, FontSize size, int x, int y);
     void updateBackground(std::vector< std::vector<int> > inputLevel);
     void updatePieces(Piece* p);
     void paintBackground();
 
-    void drawBitmap(char *filename, int x, int y, int width, int height);
-    void drawBackground(int color, int x, int y, int width, int height);
-    void drawText(std::string str, FontSize size, int x, int y);
-
-private:
     const int SCREENH = 384;
     const int SCREENW = 192 + 192 + 2;
     const std::string fontFile = "../data/Game-Over.ttf";
@@ -62,6 +62,8 @@ private:
     TTF_Font *largeFont = NULL;
     TTF_Font *mediumFont = NULL;
     TTF_Font *smallFont = NULL;
+
+    Game game;
 };
 
 

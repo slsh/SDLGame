@@ -3,12 +3,14 @@
 //
 
 #include "../headers/Game.h"
+#include "../headers/GraphicManager.h"
 
 //Debugger
 Debugger* dgb;
 bool DEBUG = false;
 
-Game* g_game = 0;
+Game* game = 0;
+GraphicManager* graphicManager = 0;
 
 int main(int argc, char* argv[]) {
     if (argc > 1) {
@@ -17,32 +19,41 @@ int main(int argc, char* argv[]) {
     //Main loop flag
     dgb = new Debugger(true);
     bool quit = false;
+    //Create window/gfx object
+    game = new Game();
+    graphicManager = new GraphicManager();
 
-    g_game = new Game();
+    graphicManager->init(game);
+
     //Current time start time
     Uint32 startTime = 0;
     Uint32 resetTime = 0;
     //Event handler
     SDL_Event e;
-    g_game->init();
-    while(g_game->isRunning()) {
+    game->init();
+    while(game->isRunning()) {
         while (SDL_PollEvent(&e) != 0) {
             //User requests quit
             if (e.type == SDL_QUIT) {
-                g_game->close();
+                game->close();
             } else if (e.type == SDL_KEYDOWN) {
                 //SDL_FillRect(screenSurface, NULL, 0);
-                g_game-> updateKey(&e.key);
+                game-> updateKey(&e.key);
             }
         }
         startTime = SDL_GetTicks();
 
-        if (((startTime - resetTime) > 1000 / g_game->getScore()) & !g_game->isPaused()){
+        if (((startTime - resetTime) > 1000 / game->getSpeed()) & !game->isPaused()){
             resetTime = SDL_GetTicks();
-            g_game->movePiece(g_game->DOWN);
+            game->movePiece(game->DOWN);
         }
-        //g_game->updateLogic();
-        g_game->updateWindow();
+        //game->updateLogic();
+        graphicManager->updateWindow();
     }
-    delete g_game;
-    return 0; }
+    delete game;
+    return 0;
+}
+/*
+
+graphicManager->close();
+ */

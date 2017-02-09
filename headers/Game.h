@@ -39,13 +39,14 @@ public:
     bool isRunning() { return gameRunning; }
     bool isPaused() { return pauseCheck; }
     unsigned long long getScore();
+    short getSpeed();
+
 
 private:
     const int LEVELROW = 24;
     const int LEVELCOL = 12;
     bool gameRunning;
     bool pauseCheck;
-    GraphicManager* graphicManager;
 
     PieceFactory* pieceFactory = new StandardPieceFactory();
     Piece* p;

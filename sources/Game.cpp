@@ -7,8 +7,6 @@
 std::vector<std::vector<int>> currentLevel(24, std::vector<int>(12,0)); //TODO Move back to private
 
 Game::Game() {
-    //Create window/gfx object
-    graphicManager = new GraphicManager();
     gameRunning = true;
     pauseCheck = false;
     score = 0;
@@ -29,7 +27,7 @@ void Game::init(){
 }
 
 // Basic tracker of automatic speed
-unsigned long long Game::getScore(){
+short Game::getSpeed(){
     if (score < 15000){
         return 2;
     } else if (score < 30000){
@@ -56,14 +54,11 @@ unsigned long long Game::getScore(){
     return 2;
 }
 
-void Game::updateWindow(){
-    graphicManager->paintBackground();
-    graphicManager->drawText("Score: " + std::to_string(score), graphicManager->SMALL, 240, 120);
-    graphicManager->updateWindow(p, np, currentLevel);
+unsigned long long Game::getScore() {
+    return score;
 }
 
 void Game::close(){
-    graphicManager->close();
     gameRunning = false;
 }
 
@@ -236,7 +231,7 @@ void Game::updateKey(SDL_KeyboardEvent *key){
                 break;
 
             case SDLK_ESCAPE:
-                pauseCheck = !isPaused() ? true : false;
+                pauseCheck = !isPaused();
                 break;
 
             case SDLK_RETURN:
@@ -260,7 +255,7 @@ void Game::updateKey(SDL_KeyboardEvent *key){
     }else{
         switch( key->keysym.sym ) {
             case SDLK_ESCAPE:
-                pauseCheck = !isPaused() ? true : false;
+                pauseCheck = !isPaused();
                 break;
             default:
                 break;
