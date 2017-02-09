@@ -25,7 +25,32 @@ GraphicManager::GraphicManager(){
     // In the case that the window could not be made...
     printf("Could not create window: %s\n", SDL_GetError());
     }
+
+    largeFont = TTF_OpenFont(fontFile.c_str(), 102);
+    mediumFont = TTF_OpenFont(fontFile.c_str(), 72);
+    smallFont = TTF_OpenFont(fontFile.c_str(), 48);
 };
+
+GraphicManager::~GraphicManager() {
+    //Deallocate surface
+    SDL_FreeSurface( screenSurface );
+    screenSurface = NULL;
+
+    SDL_FreeSurface( blitSurface );
+    blitSurface = NULL;
+
+    //Destroy window
+    SDL_DestroyWindow( window );
+    window = NULL;
+
+    SDL_Quit();
+
+    TTF_CloseFont(largeFont);
+    TTF_CloseFont(mediumFont);
+    TTF_CloseFont(smallFont);
+
+    TTF_Quit();
+}
 
 void GraphicManager::init(){
 
@@ -57,20 +82,25 @@ void GraphicManager::drawBackground(int color, int x, int y, int width, int heig
     SDL_FillRect(screenSurface, &dstrect, color);
 }
 
-void GraphicManager::drawText(std::string str, int color, int x, int y, int width, int height){
-
-    TTF_Font *fntCourier = TTF_OpenFont( "../images/Game-Over.ttf", 48 );
-
+void GraphicManager::drawText(std::string str, FontSize size, int x, int y){
     SDL_Color clrFg = {255,255,255,0};
+    TTF_Font *fontToUse = NULL;
+    switch (size) {
+        case LARGE:
+            fontToUse = largeFont;
+            break;
+        case MEDIUM:
+            fontToUse = mediumFont;
+            break;
+        case SMALL:
+        default:
+            fontToUse = smallFont;
+    }
 
-    SDL_Surface *sText = TTF_RenderText_Solid( fntCourier, str.c_str() , clrFg );
-
+    SDL_Surface *sText = TTF_RenderText_Solid(fontToUse, str.c_str() , clrFg);
     SDL_Rect rcDest = {x,y,0,0};
-
-    SDL_BlitSurface( sText,NULL, screenSurface,&rcDest );
-
-    SDL_FreeSurface( sText );
-    TTF_CloseFont( fntCourier );
+    SDL_BlitSurface(sText, NULL, screenSurface,&rcDest);
+    SDL_FreeSurface(sText);
 }
 
 
@@ -152,19 +182,7 @@ void GraphicManager::updateBackground(std::vector< std::vector<int> > inputLevel
 
 void GraphicManager::close()
 {
-    //Deallocate surface
-    SDL_FreeSurface( screenSurface );
-    screenSurface = NULL;
 
-    SDL_FreeSurface( blitSurface );
-    blitSurface = NULL;
-
-    //Destroy window
-    SDL_DestroyWindow( window );
-    window = NULL;
-
-    //gameRunning = false;
-    SDL_Quit();
 }
 
 void GraphicManager::paintBackground(){
@@ -175,7 +193,7 @@ void GraphicManager::paintBackground(){
 
 }
 void GraphicManager::updateWindow(Piece* p, Piece* np, std::vector<std::vector <int>> currentLevel){
-    drawText("Next Piece", WHITE, 240, 100, 2, SCREENH);
+    drawText("Next Piece", SMALL, 240, 100);
 
     updatePieces(p);                //Update the falling piece
     updatePieces(np);               //Update the next piece

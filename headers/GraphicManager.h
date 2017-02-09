@@ -19,7 +19,14 @@
 class GraphicManager {
 public:
     GraphicManager();
-    ~GraphicManager() {close(); TTF_Quit();}
+    ~GraphicManager();
+
+    enum FontSize {
+        LARGE,
+        MEDIUM,
+        SMALL
+    };
+
     void close();
     void updateWindow(Piece* p, Piece* np, std::vector<std::vector <int>> currentLevel);
 
@@ -31,11 +38,12 @@ public:
 
     void drawBitmap(char *filename, int x, int y, int width, int height);
     void drawBackground(int color, int x, int y, int width, int height);
-    void drawText(std::string str, int color, int x, int y, int width, int height);
+    void drawText(std::string str, FontSize size, int x, int y);
 
 private:
     const int SCREENH = 384;
     const int SCREENW = 192 + 192 + 2;
+    const std::string fontFile = "../data/Game-Over.ttf";
 
     SDL_Window* window;
     SDL_Surface* screenSurface = NULL;
@@ -50,6 +58,10 @@ private:
     SDL_Surface* color_dblue = NULL;
     SDL_Surface* color_magneta = NULL;
     SDL_Surface* color_grey = NULL;
+
+    TTF_Font *largeFont = NULL;
+    TTF_Font *mediumFont = NULL;
+    TTF_Font *smallFont = NULL;
 };
 
 

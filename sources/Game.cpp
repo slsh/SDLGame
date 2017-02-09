@@ -58,7 +58,7 @@ unsigned long long Game::getScore(){
 
 void Game::updateWindow(){
     graphicManager->paintBackground();
-    graphicManager->drawText("Score: " + std::to_string(score), GREY_LIGHT, 240, 120, 0, 0);
+    graphicManager->drawText("Score: " + std::to_string(score), graphicManager->SMALL, 240, 120);
     graphicManager->updateWindow(p, np, currentLevel);
 }
 
@@ -182,15 +182,6 @@ bool Game::isMovementAllowed(Direction direction){
                             return false;
                         }
                         break;
-                    case ROTATE:
-                        //Check for other pieces and Limit
-                        if ((currentLevel[i + p->getX()][j + p->getY()] > 0) ||
-                            (j + p->getY() - 1 < 0) ||
-                            (j + p->getY() + 1 > 11)
-                                ){
-                            return false;
-                        }
-                        break;
                     default:
                         break;
                 }
@@ -210,8 +201,8 @@ bool Game::isRotationAllowed(Direction direction){
                     case ROTATE:
                         //Check for other pieces and Limit
                         if ((currentLevel[i + p->getX()][j + p->getY()] > 0) ||
-                            (j + p->getY() - 1 < 0) ||
-                            (j + p->getY() + 1 > 11)
+                            (j + p->getY() < 0) ||
+                            (j + p->getY() > 11)
                                 ){
                             return false;
                         }
