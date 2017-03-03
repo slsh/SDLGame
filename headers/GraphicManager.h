@@ -11,11 +11,9 @@
 
 #if defined(__APPLE__)
 #include <SDL_ttf.h>
-#elif defined(__linux__)
+#elif defined(__linux__) || defined(__WIN32__)
 #include <SDL2/SDL_ttf.h>
 #endif
-
-
 
 class GraphicManager {
 public:
