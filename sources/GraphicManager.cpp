@@ -3,7 +3,17 @@
 //
 
 #include "../headers/GraphicManager.h"
+#include <sstream>
 
+namespace patch
+{
+    template < typename T > std::string to_string( const T& n )
+    {
+        std::ostringstream stm ;
+        stm << n ;
+        return stm.str() ;
+    }
+}
 
 GraphicManager::GraphicManager(){
     TTF_Init();
@@ -24,7 +34,7 @@ GraphicManager::GraphicManager(){
     // Check that the window was successfully created
     if (window == NULL) {
     // In the case that the window could not be made...
-    printf("Could not create window: %s\n", SDL_GetError());
+    //printf("Could not create window: %s\n", SDL_GetError());
     }
 
     largeFont = TTF_OpenFont(fontFile.c_str(), 102);
@@ -198,10 +208,10 @@ void GraphicManager::updateWindow(){
 
     drawText("Next Piece", SMALL, 240, 0);
     drawText("Score:", SMALL, 240, 120);
-    drawText(std::to_string(game->getScore()), SMALL, 240, 140);
+    drawText(patch::to_string(game->getScore()), SMALL, 240, 140);
 
     drawText("HighScore:", SMALL, 240, 160);
-    drawText(std::to_string(game->getHighScore()), SMALL, 240, 180);
+    drawText(patch::to_string(game->getHighScore()), SMALL, 240, 180);
 
 
     updatePieces(game->getCurrentPiece());            //Update the falling piece

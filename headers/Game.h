@@ -6,6 +6,7 @@
 #define SDLGAME_GAME_H
 
 #include <SDL2/SDL.h>
+
 #include <iostream>
 #include "timer.h"
 #include "Debugger.h"

@@ -3,6 +3,12 @@ project(SDLGame)
 
 if (APPLE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -w -I/Library/Frameworks/SDL2.framework/Headers -I/Library/Frameworks/SDL2_ttf.framework/Headers -F/Library/Frameworks -framework SDL2 -framework SDL2_ttf")
+elseif(WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -lmingw32")
+    set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -lSDL2main -lSDL2 -lSDL2_ttf")
+
+    include_directories(${PROJECT_SOURCE_DIR}/include)
+    link_directories(${PROJECT_SOURCE_DIR}/lib)
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -w -lSDL2 -lSDL2_ttf")
 endif()
@@ -44,3 +50,6 @@ set(HEADER_FILES
 
 add_executable(SDLGame ${SOURCE_FILES} ${HEADER_FILES})
 
+if(WIN32)
+    target_link_libraries(SDLGame mingw32 SDL2 SDL2main SDL2_ttf)
+endif()
